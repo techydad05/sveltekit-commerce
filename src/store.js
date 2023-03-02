@@ -1,10 +1,19 @@
 import { writable } from 'svelte/store';
 import { shopifyFetch } from './utils/shopify.js';
 import { loadCart } from '$utils/shopify';
+import { createClient } from  "./client.js";
 
 export const cartQuantity = writable('');
 export const cart = writable([]);
 export const search = writable('');
+export const productStore = writable([]);
+
+export const getProducts = async () => {
+  const client = createClient();
+  const { products } = await client.products.list();
+  productStore.set(products);
+  console.log("Products:", products);
+};
 
 export const getCartItems = async () => {
   let cartId = JSON.parse(localStorage.getItem('cartId'));

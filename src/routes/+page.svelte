@@ -1,6 +1,9 @@
 <script>
   import ThreeItemGrid from '$components/ThreeItemGrid.svelte';
   import Carousel from '$components/Carousel.svelte';
+  import { getProducts } from '../store';
+
+  getProducts();
 
   /** @type {import('./$types').PageData} */
   export let data;
