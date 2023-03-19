@@ -14,27 +14,19 @@
   }
 </script>
 
-<form on:submit|preventDefault={submit} class="relative flex w-full items-center">
-  <div class="absolute top-0 right-0 mr-2">
-    <Icons strokeColor="#fff" type="search" />
+<form on:submit|preventDefault={submit} class="relative flex items-center">
+  <div class="form-control w-full">
+    <label class="input-group">
+      <span><Icons type="search" /></span>
+      <input
+        id="searchInput"
+        type="text"
+        bind:value
+        placeholder="Search for products..."
+        autocomplete="off"
+        class="input w-full input-bordered text-primary placeholder-secondary"
+      />
+    </label>
   </div>
-  <input
-    id="searchInput"
-    type="text"
-    bind:value
-    placeholder="Search for products..."
-    autocomplete="off"
-    class="w-full border border-white/30 bg-transparent p-2"
-  />
 </form>
 
-<style>
-  form {
-    margin: 0px;
-    padding: 0px;
-    display: inline;
-  }
-  input::placeholder {
-    color: rgb(85, 85, 85);
-  }
-</style>

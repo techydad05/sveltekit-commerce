@@ -8,11 +8,12 @@ export const cart = writable([]);
 export const search = writable('');
 export const productStore = writable([]);
 
+
+// custom functions added by me
 export const getProducts = async () => {
   const client = createClient();
   const { products } = await client.products.list();
   productStore.set(products);
-  console.log("Products:", products);
 };
 
 export const getCartItems = async () => {

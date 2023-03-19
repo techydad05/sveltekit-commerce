@@ -1,6 +1,8 @@
 <script>
   import Icons from './Icons.svelte';
   import { createEventDispatcher } from 'svelte';
+  import { fly } from 'svelte/transition';
+  import { quadInOut } from 'svelte/easing';
   const dispatch = createEventDispatcher();
   export let loading = false;
   export let items = [];
@@ -41,9 +43,10 @@
 
 <div
   on:click|self
-  class="absolute inset-0 z-50 flex max-h-screen w-full justify-end overflow-hidden bg-black/50"
+  class="absolute top-full right-0 menu menu-horizontal overflow-hidden"
+  transition:fly={{ x: '100', y: 0, easing: quadInOut, duration: 250 }}
 >
-  <div class="z-50 w-full bg-black p-6 md:w-1/2 lg:w-1/3 relative">
+  <div class="z-50 w-full bg-base-300 p-6 relative">
     {#if loading}
       <div class="absolute inset-0 bg-black/50 z-50" />
     {/if}

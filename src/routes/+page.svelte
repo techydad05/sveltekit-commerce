@@ -1,12 +1,14 @@
 <script>
   import ThreeItemGrid from '$components/ThreeItemGrid.svelte';
   import Carousel from '$components/Carousel.svelte';
-  import { getProducts } from '../store';
-
+  import DaisyHero from '$components/DaisyHero.svelte';
+  
+  import { getProducts, productStore } from '../store';
   getProducts();
 
   /** @type {import('./$types').PageData} */
   export let data;
+  $: console.log($productStore);
 
   $: clothesCollection = data.products[0]?.node?.products?.edges;
   $: featuredCollection = data.products[1]?.node?.products?.edges;
@@ -17,6 +19,9 @@
 </svelte:head>
 
 <main>
+  <DaisyHero figure="https://picsum.photos/500/650">
+    Yizzo  
+  </DaisyHero>
   <section>
     <div class="lg:h-[90vh]">
       <ThreeItemGrid products={featuredCollection} />

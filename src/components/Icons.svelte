@@ -18,13 +18,15 @@
       /></svg
     >
   {:else if type === 'cart'}
-    <svg width="20" height="22" viewBox="0 0 20 22" fill="none" stroke={strokeColor}
-      ><path
+    <svg width="24" height="26" viewBox="0 0 20 22" fill="none" class="stroke-primary cart-btn"
+      ><path 
+        class="cart-btn"
         d="M4 1L1 5V19C1 19.5304 1.21071 20.0391 1.58579 20.4142C1.96086 20.7893 2.46957 21 3 21H17C17.5304 21 18.0391 20.7893 18.4142 20.4142C18.7893 20.0391 19 19.5304 19 19V5L16 1H4Z"
         stroke-width="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"
-      /><path d="M1 5H19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /><path
+        /><path d="M1 5H19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /><path
+        class="cart-btn"
         d="M14 9C14 10.0609 13.5786 11.0783 12.8284 11.8284C12.0783 12.5786 11.0609 13 10 13C8.93913 13 7.92172 12.5786 7.17157 11.8284C6.42143 11.0783 6 10.0609 6 9"
         stroke-width="1.5"
         stroke-linecap="round"
@@ -73,10 +75,9 @@
   {:else if type === 'menu'}
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6"
+      class="h-6 w-6 stroke-primary"
       fill="none"
       viewBox="0 0 24 24"
-      stroke="#fff"
       ><path
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -87,7 +88,7 @@
   {:else if type === 'search'}
     <svg style={`width:${width};height:${height}`} viewBox="0 0 24 24">
       <path
-        fill={strokeColor}
+        class="fill-primary"
         d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"
       />
     </svg>

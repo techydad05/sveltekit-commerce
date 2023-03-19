@@ -11,6 +11,26 @@
   let checkoutUrl;
   let cartCreatedAt;
   let cartItems = [];
+  export let theme = null;
+
+  function clickOutside(element, callbackFunction) {
+    function onClick(event) {
+      if (!element.contains(event.target) && !event.target.classList.contains('cart-btn')) {
+        callbackFunction();
+      }
+    }
+
+    document.body.addEventListener('click', onClick);
+
+    return {
+      update(newCallbackFunction) {
+        callbackFunction = newCallbackFunction;
+      },
+      destroy() {
+        document.body.removeEventListener('click', onClick);
+      }
+    };
+  }
 
   onMount(async () => {
     if (typeof window !== 'undefined') {
@@ -94,18 +114,24 @@
   }
 </script>
 
-<main class={`${showCart ? 'h-screen' : 'min-h-screen'} text-white overflow-hidden`}>
-  {#if showCart}
-    <ShoppingCart
-      items={cartItems}
-      on:click={hideCart}
-      on:removeProduct={removeProduct}
-      on:addProduct={addToCart}
-      on:getCheckoutUrl={getCheckoutUrl}
-      bind:loading
-    />
-  {/if}
-  <Header on:openCart={openCart} />
+<main
+  data-theme={theme ?? 'dark'}
+  class={`${showCart ? 'h-screen' : 'min-h-screen'} overflow-hidden text-white`}
+>
+  <Header bind:new_theme={theme} on:openCart={openCart}>
+    <div use:clickOutside={hideCart} slot="cart">
+      {#if showCart}
+        <ShoppingCart
+          items={cartItems}
+          on:click={hideCart}
+          on:removeProduct={removeProduct}
+          on:addProduct={addToCart}
+          on:getCheckoutUrl={getCheckoutUrl}
+          bind:loading
+        />
+        {/if}
+      </div>
+  </Header>
   <div class="min-h-screen overflow-scroll">
     <slot />
     <Footer />
