@@ -18,7 +18,7 @@
 </svelte:head>
 
 <main>
-  <!-- <section>
+  <section>
     {#if homeProduct}
       <DaisyHero featured product={homeProduct} />
     {:else}
@@ -27,7 +27,7 @@
     <div class="lg:h-[90vh]">
       <ThreeItemGrid products={featuredProducts} />
     </div>
-  </section> -->
+  </section>
   <section>
     <Carousel items={allProducts} />
   </section>

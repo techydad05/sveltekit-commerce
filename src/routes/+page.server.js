@@ -5,7 +5,8 @@ import { getProducts } from '../store';
 
 /** @type {import('./$types').RequestHandler} */
 export async function load() {
-  const products = getProducts()
+  const products = getProducts();
+  console.log(products);
   if (products) {
     return {
       products

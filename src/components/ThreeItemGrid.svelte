@@ -1,6 +1,5 @@
 <script>
   import GridTile from '$components/GridTile.svelte';
-
   export let products;
 </script>
 

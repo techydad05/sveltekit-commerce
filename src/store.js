@@ -46,8 +46,6 @@ export const getProducts = async () => {
       featuredProduct.set(product);
     }
   });
-  productStore.set(products);
-  // console.log(products)
   return products;
 };
 
