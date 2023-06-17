@@ -1,7 +1,7 @@
 <script>
   import { page } from '$app/stores';
   import Icons from '$components/Icons.svelte';
-  import { cartQuantity } from '../store';
+  import { cartQuantity, headerHeight } from '../store';
   import SearchBar from '$components/SearchBar.svelte';
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
@@ -88,9 +88,10 @@
       elem?.blur();
     }
   };
+
 </script>
 
-<div class="navbar bg-base-100 relative z-[99] mb-10 items-start shadow-md">
+<div class="navbar bg-base-100 relative z-[99] items-start shadow-md">
   <div class="flex-1">
     <a href="/" class="btn btn-link logo text-xl normal-case"
       ><img

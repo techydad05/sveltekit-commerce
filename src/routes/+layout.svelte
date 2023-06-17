@@ -112,6 +112,7 @@
     await loadCart();
     loading = false;
   }
+
 </script>
 
 <main

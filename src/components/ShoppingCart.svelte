@@ -3,9 +3,11 @@
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
   import { quadInOut } from 'svelte/easing';
+  import { headerHeight } from '../store';
   const dispatch = createEventDispatcher();
   export let loading = false;
   export let items = [];
+
   function addOneItem(item, i) {
     loading = true;
     dispatch('addProduct', {
@@ -43,12 +45,12 @@
 
 <div
   on:click|self
-  class="absolute top-full right-0 menu menu-horizontal overflow-hidden"
+  class={`menu menu-horizontal absolute top-full right-0 overflow-y-auto h-[calc(100vh_-_${$headerHeight}px)]`}
   transition:fly={{ x: '100', y: 0, easing: quadInOut, duration: 250 }}
 >
-  <div class="z-50 w-full bg-base-300 p-6 relative">
+  <div class="bg-base-300 relative z-50 w-full p-6">
     {#if loading}
-      <div class="absolute inset-0 bg-black/50 z-50" />
+      <div class="absolute inset-0 z-50 bg-black/50" />
     {/if}
     <div class="mb-6 flex w-full items-center justify-between">
       <div class="text-2xl font-medium">My Cart</div>
@@ -62,7 +64,7 @@
         <div class="mt-6 text-center text-2xl font-bold">Your cart is empty.</div>
       </div>
     {/if}
-    <div class="overflow-y-auto" style="height: 80%;">
+    <div class="overflow-y-auto">
       {#each items as item, i (i)}
         <div class="mb-2 flex w-full">
           <img

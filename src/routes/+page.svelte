@@ -2,16 +2,15 @@
   import ThreeItemGrid from '$components/ThreeItemGrid.svelte';
   import Carousel from '$components/Carousel.svelte';
   import DaisyHero from '$components/DaisyHero.svelte';
-  
-  import { getProducts, productStore } from '../store';
-  getProducts();
 
   /** @type {import('./$types').PageData} */
   export let data;
-  $: console.log($productStore);
 
-  $: clothesCollection = data.products[0]?.node?.products?.edges;
-  $: featuredCollection = data.products[1]?.node?.products?.edges;
+  // $: clothesCollection = data.products[0]?.node?.products?.edges;
+  // $: featuredCollection = data.products[1]?.node?.products?.edges;
+  $: allProducts = data.products;
+  $: homeProduct = data.products.filter(product => product.tags.some(tag => tag.value === 'home'))[0];
+  $: featuredProducts = data.products.filter(product => product.tags.some(tag => tag.value === 'featured' || tag.value === 'hott'));
 </script>
 
 <svelte:head>
@@ -19,23 +18,25 @@
 </svelte:head>
 
 <main>
-  <DaisyHero figure="https://picsum.photos/500/650">
-    Yizzo  
-  </DaisyHero>
-  <section>
+  <!-- <section>
+    {#if homeProduct}
+      <DaisyHero featured product={homeProduct} />
+    {:else}
+      <DaisyHero figure="https://picsum.photos/500/650" />
+    {/if}
     <div class="lg:h-[90vh]">
-      <ThreeItemGrid products={featuredCollection} />
+      <ThreeItemGrid products={featuredProducts} />
     </div>
-  </section>
+  </section> -->
   <section>
-    <Carousel items={clothesCollection} />
+    <Carousel items={allProducts} />
   </section>
   <section>
     <div
-      class="flex flex-col px-8 py-20 text-white border border-black bg-dark lg:flex-row lg:items-center"
+      class="bg-dark flex flex-col border border-black px-8 py-20 text-white lg:flex-row lg:items-center"
     >
       <div
-        class="flex-none mb-4 mr-8 text-3xl font-black text-left md:text-4xl lg:mb-0 lg:w-1/3 lg:text-right lg:text-6xl"
+        class="mb-4 mr-8 flex-none text-left text-3xl font-black md:text-4xl lg:mb-0 lg:w-1/3 lg:text-right lg:text-6xl"
       >
         Dessert dragée halvah croissant.
       </div>
@@ -45,7 +46,7 @@
           bonbon croissant fruitcake jujubes macaroon oat cake. Soufflé bonbon caramels jelly beans.
           Tiramisu sweet roll cheesecake pie carrot cake.
         </div>
-        <button class="mt-4 font-bold text-svelteOrange hover:text-svelteDark lg:text-2xl">
+        <button class="text-svelteOrange hover:text-svelteDark mt-4 font-bold lg:text-2xl">
           Read it here
         </button>
       </div>
