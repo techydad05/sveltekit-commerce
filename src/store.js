@@ -38,7 +38,7 @@ export const featuredProduct = writable([]);
 export const getProducts = async () => {
   const client = createClient();
   const { products } = await client.products.list();
-  console.log("Products:", products)
+  // console.log("Products:", products)
   // check for featured product to set main hero if it doesnt
   // exist then a default hero one will be used
   products.forEach(product => {
