@@ -6,6 +6,7 @@ export async function load() {
 
   if (res.status === 200) {
     const collections = res.body?.data?.collections?.edges || [];
+    console.log("collections:", collections)
     if (collections) {
       return {
         body: { collections }
