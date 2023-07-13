@@ -1,7 +1,7 @@
 <script>
   import { page } from '$app/stores';
   import Icons from '$components/Icons.svelte';
-  import { cartQuantity, headerHeight } from '../store';
+  import { cartQuantity } from '$lib/store';
   import SearchBar from '$components/SearchBar.svelte';
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
@@ -30,16 +30,21 @@
 
   // move this?
   let showMenu = false;
+  let showThemeChange = true;
+  export let menuItems;
+  $: menuItems = menuItems.sort(function (a, b) {
+    return a.title.localeCompare(b.title);
+  });
 
   const dispatch = createEventDispatcher();
 
   $: currentRoute = $page.url.pathname;
 
-  let tabs = [
-    { name: 'All', path: '/search' },
-    { name: 'Featured', path: '/search/featured' },
-    { name: 'Apparel', path: '/search/clothes' }
-  ];
+  // let tabs = [
+  //   { name: 'All', path: '/search' },
+  //   { name: 'Featured', path: '/search/featured' },
+  //   { name: 'Apparel', path: '/search/clothes' }
+  // ];
 
   let theme_array = [
     'light',
@@ -88,12 +93,11 @@
       elem?.blur();
     }
   };
-
 </script>
 
-<div class="navbar bg-base-100 relative z-[99] items-start shadow-md">
-  <div class="flex-1">
-    <a href="/" class="btn btn-link logo text-xl normal-case"
+<div class="navbar bg-base-100 relative z-[99] items-center shadow-md">
+  <div class="flex-1" on:dblclick={() => (showThemeChange = !showThemeChange)}>
+    <a href="/" class="btn btn-link logo mt-[-3%] text-xl normal-case"
       ><img
         alt="Svelte Logo"
         class="logo w-[75px]"
@@ -102,9 +106,23 @@
         src="/svelte_logo.png"
       /></a
     >
+    <div class:hidden={showThemeChange} class="dropdown">
+      <select
+        data-choose-theme
+        class="select select-bordered text-primary w-full"
+        bind:value={new_theme}
+      >
+        <option value={new_theme} class="text-primary"
+          ><Icons type="menu" />{new_theme ? new_theme : 'Select a theme'}</option
+        >
+        {#each theme_array as value}
+          <option {value} class="text-primary">{value}</option>
+        {/each}
+      </select>
+    </div>
   </div>
   <div class="flex-none">
-    <button on:click={openCart} class="cart-btn btn btn-link relative mx-4 z-[99]">
+    <button on:click={openCart} class="cart-btn btn btn-link relative z-[99] mx-4">
       <Icons type="cart" />
       <div class="cart-btn badge badge-secondary absolute top-7 left-8">{$cartQuantity}</div>
     </button>
@@ -129,27 +147,15 @@
           class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] min-w-[300px] p-4 opacity-100 shadow"
         >
           <li><SearchBar /></li>
-          <li>
-            <div class="dropdown">
-              <select class="select select-bordered text-primary w-full" bind:value={new_theme}>
-                <option value={new_theme} class="text-primary"
-                  ><Icons type="menu" />Select a theme</option
-                >
-                {#each theme_array as value}
-                  <option {value} class="text-primary">{value}</option>
-                {/each}
-              </select>
-            </div>
-          </li>
-          {#each tabs as tab, i (tab.name)}
-            <li>
+          {#each menuItems as tab}
+            <li on:click={() => (showMenu = false)}>
               <a
                 data-sveltekit-prefetch
-                href={tab.path}
+                href={`${$page.url.origin}/search/${tab.handle}`}
                 class={`text-secondary border-b-secondary-focus hover:text-primary block border-b-2 px-2 py-1 text-center text-lg ${
-                  currentRoute === tab.path ? 'text-primary-focus' : 'text-secondary'
+                  currentRoute === tab.handle ? 'text-primary-focus' : 'text-secondary'
                 }`}
-                style="border-radius: 0 !important;">{tab.name}</a
+                style="border-radius: 0 !important;">{tab.title}</a
               >
             </li>
           {/each}
@@ -162,110 +168,6 @@
   {/if}
 </div>
 
-<!-- <nav class="flex items-center border-b border-zinc-700 lg:px-2">
-  <div class="flex w-1/3 items-center">
-    <div class="mr-4" class:active={currentRoute === '/'}>
-      <a href="/" data-sveltekit-prefetch class="">
-        <picture>
-          <source srcset="/svelte_logo_2.png" type="image/png" />
-          <img
-            alt="Svelte Logo"
-            class="ml-[12.5%] w-[75%]"
-            decoding="async"
-            loading="eager"
-            src="/svelte_logo.png"
-          />
-        </picture>
-      </a>
-    </div>
-    <div class="hidden lg:flex">
-      {#each tabs as tab, i (tab.name)}
-        <div class:active={currentRoute === tab.path}>
-          <a
-            data-sveltekit-prefetch
-            href={tab.path}
-            class={`text-primary rounded-lg px-2 py-1 text-xl hover:opacity-100 ${
-              currentRoute === tab.path ? 'opacity-100' : 'opacity-75'
-            }`}>{tab.name}</a
-          >
-        </div>
-      {/each}
-    </div>
-  </div>
-  <div class="hidden w-1/3 lg:block">
-    <SearchBar />
-  </div>
-  <div class="ml-auto flex items-center">
-    <div class="dropdown my-4 mr-10 hidden lg:block">
-      <select class="select select-bordered text-primary w-full max-w-xs" bind:value={new_theme}>
-        <option value={new_theme} class="text-primary">Select a Theme</option>
-        {#each theme_array as value}
-          <option {value} class="text-primary">{value}</option>
-        {/each}
-      </select>
-    </div>
-    <button on:click={openCart} class="relative my-2 mx-4">
-      <Icons type="cart" />
-      <div class="badge badge-secondary absolute top-4">{$cartQuantity}</div>
-    </button>
-    <button
-      on:click={() => {
-        showMenu = true;
-      }}
-      aria-label="Open menu"
-      class="lg:hidden"
-    >
-      <Icons type="menu" />
-    </button>
-  </div>
-  {#if showMenu}
-    <div
-      on:click|self={() => {
-        showMenu = false;
-      }}
-      class="absolute inset-0 z-50 flex max-h-screen w-full justify-end overflow-hidden bg-black/50 lg:hidden"
-    >
-      <div class="z-30 w-full bg-black p-6 md:w-1/2 lg:w-1/3">
-        <div class="flex w-full items-center justify-between">
-          <button
-            aria-label="Close menu"
-            on:click={() => {
-              showMenu = false;
-            }}
-          >
-            <Icons strokeColor="#fff" type="close" />
-          </button>
-          <button on:click={openCart} class="relative mr-4">
-            <Icons strokeColor="#fff" type="cart" />
-            <div
-              class="absolute bottom-0 left-0 -ml-3 -mb-3 flex h-5 w-5 items-center justify-center rounded-full border border-black bg-white text-xs text-black"
-            >
-              {$cartQuantity}
-            </div>
-          </button>
-        </div>
-        <div class="mt-6 flex w-full flex-col">
-          {#each tabs as tab, i (tab.name)}
-            <div
-              class:active={currentRoute === tab.path}
-              on:click={() => {
-                showMenu = false;
-              }}
-            >
-              <a
-                data-sveltekit-prefetch
-                href={tab.path}
-                class={`rounded-lg px-2 py-1 text-xl font-bold text-white hover:opacity-100 ${
-                  currentRoute === tab.path ? 'opacity-100' : 'opacity-75'
-                }`}>{tab.name}</a
-              >
-            </div>
-          {/each}
-        </div>
-      </div>
-    </div>
-  {/if}
-</nav> -->
 <style>
   .open-menu {
     visibility: visible !important;

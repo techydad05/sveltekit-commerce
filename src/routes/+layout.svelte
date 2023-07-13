@@ -3,15 +3,17 @@
   import Header from '$components/Header.svelte';
   import Footer from '$components/Footer.svelte';
   import ShoppingCart from '$components/ShoppingCart.svelte';
-  import { getCartItems } from '../store';
+  import { getCartItems } from '$lib/store';
   import { onMount } from 'svelte';
   import { createCart } from '$utils/shopify';
 
+  export let data;
+  let collections = data.collections;
   let cartId;
   let checkoutUrl;
   let cartCreatedAt;
   let cartItems = [];
-  export let theme = null;
+  let theme = null;
 
   function clickOutside(element, callbackFunction) {
     function onClick(event) {
@@ -53,6 +55,7 @@
         }
       });
     }
+    theme = localStorage.getItem('theme');
   });
 
   async function callCreateCart() {
@@ -112,14 +115,13 @@
     await loadCart();
     loading = false;
   }
-
 </script>
 
 <main
   data-theme={theme ?? 'dark'}
   class={`${showCart ? 'h-screen' : 'min-h-screen'} overflow-hidden text-white`}
 >
-  <Header bind:new_theme={theme} on:openCart={openCart}>
+  <Header menuItems={data?.collections} bind:new_theme={theme} on:openCart={openCart}>
     <div use:clickOutside={hideCart} slot="cart">
       {#if showCart}
         <ShoppingCart
@@ -130,8 +132,8 @@
           on:getCheckoutUrl={getCheckoutUrl}
           bind:loading
         />
-        {/if}
-      </div>
+      {/if}
+    </div>
   </Header>
   <div class="min-h-screen overflow-scroll">
     <slot />

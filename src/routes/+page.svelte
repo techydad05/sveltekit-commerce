@@ -2,12 +2,12 @@
   import ThreeItemGrid from '$components/ThreeItemGrid.svelte';
   import Carousel from '$components/Carousel.svelte';
   import DaisyHero from '$components/DaisyHero.svelte';
+  import { onMount } from 'svelte';
+  // import { getProducts, featuredProduct } from '$lib/store';
 
   /** @type {import('./$types').PageData} */
   export let data;
 
-  // $: clothesCollection = data.products[0]?.node?.products?.edges;
-  // $: featuredCollection = data.products[1]?.node?.products?.edges;
   $: allProducts = data.products;
   $: homeProduct = data.products.filter((product) =>
     product.tags.some((tag) => tag.value === 'home')
@@ -28,12 +28,22 @@
     {:else}
       <DaisyHero figure="https://picsum.photos/500/650" />
     {/if}
-    <div class="lg:h-[90vh]">
-      <ThreeItemGrid products={featuredProducts} />
-    </div>
+    {#if featuredProducts}
+      <div class="lg:h-[90vh]">
+        {#if featuredProducts.length >= 3}
+          <ThreeItemGrid products={featuredProducts} />
+        {:else}
+          <div class="flex p-[120px] text-2xl bg-secondary">
+            No products in grid container.. add some or remove component?
+          </div>
+        {/if}
+      </div>
+    {/if}
   </section>
   <section>
-    <Carousel items={allProducts} />
+    {#if allProducts}
+      <Carousel items={allProducts} />
+    {/if}
   </section>
   <section>
     <div

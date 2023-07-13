@@ -1,7 +1,8 @@
 import { writable } from 'svelte/store';
-import { shopifyFetch } from './utils/shopify.js';
+import { shopifyFetch } from '../utils/shopify.js';
 import { loadCart } from '$utils/shopify';
-import { createClient } from "./client.js";
+import { createClient } from "../client.js";
+const client = createClient();
 
 export const cartQuantity = writable('');
 export const cart = writable([]);
@@ -11,29 +12,41 @@ export const productStore = writable([]);
 export const productTags = writable([]);
 export const productsByTag = writable([]);
 export const featuredProduct = writable([]);
+export const collectionProducts = writable([]);
+export const allProducts = writable([]);
+export const collections = writable([]);
 
-// MAY END UP GETTING RID OF THIS AND USING SEVERAL SEPARATE STORES
-// function setProductStores() {
-//   const { subscribe, set, update } = writable(["flerp"]);
+const getAllProducts = async () => {
+  return client.products.list().then((res) => {
+    allProducts.set(res.products);
+    return res;
+  })
+} 
 
-//   return {
-//     subscribe,
-//     set,
-//     addTo: (n) => update(n => {
-//       console.log(n);
-//     }),
-//     addTo: () => update(n => {
-//       n.push("testies");
-//       return n;
-//     }),
-//     increment: () => update(n => n + 1),
-//     decrement: () => update(n => n - 1),
-//     reset: () => set(0),
-//   };
+export function getCollections() {
+  return client.collections.list().then((res) => {
+    collections.set(res.collections);
+    return res;
+  });
+}
+
+export async function getCollectionProducts(collection) {
+  const { collections } = await client.collections.list();
+  let id = "";
+  collections.forEach(col => {
+    col.handle.includes(collection) ?  id = col.id : null;
+  });
+  return client.products.list({collection_id: [id]}).then((res) => {
+    collectionProducts.set(res.products);
+    return res;
+  });
+}
+
+// export const getCollections = async () => {
+//   const client = createClient();
+//   const collections = await  client.collections.list();
+//   return collections;
 // }
-// export const productStores = setProductStores();
-
-// custom functions added by me
 
 export const getProducts = async () => {
   const client = createClient();

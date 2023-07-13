@@ -6,7 +6,6 @@ export async function load() {
 
   if (res.status === 200) {
     const allProducts = res.body?.data.products;
-
     if (allProducts) {
       return {
         body: { allProducts }

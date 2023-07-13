@@ -1,12 +1,12 @@
 // import { getAllCollections } from '$utils/shopify';
 import { error } from '@sveltejs/kit';
 // import axios from "axios";
-import { getProducts } from '../store';
+import { getProducts } from '$lib/store';
 
 /** @type {import('./$types').RequestHandler} */
 export async function load() {
+  // const { collections } = await getCollections();
   const products = getProducts();
-  console.log(products);
   if (products) {
     return {
       products

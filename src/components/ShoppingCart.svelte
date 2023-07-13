@@ -3,7 +3,7 @@
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
   import { quadInOut } from 'svelte/easing';
-  import { headerHeight } from '../store';
+  import { headerHeight } from '$lib/store';
   const dispatch = createEventDispatcher();
   export let loading = false;
   export let items = [];

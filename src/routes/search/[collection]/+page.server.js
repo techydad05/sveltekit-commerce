@@ -1,20 +1,14 @@
-import { getAllCollections } from '$utils/shopify';
 import { error } from '@sveltejs/kit';
+import { getCollectionProducts } from '$lib/store.js';
 
-export async function load() {
-  const res = await getAllCollections();
-
-  if (res.status === 200) {
-    const collections = res.body?.data?.collections?.edges || [];
-    console.log("collections:", collections)
-    if (collections) {
+export async function load({ params }) {
+  const res = await getCollectionProducts(params.collection);
+  if (res.response.status === 200) {
       return {
-        body: { collections }
-      };
-    }
-
-    throw error(404)
+          collection: res.products,
+      }
+      throw error(404)
   } else {
-    throw error(res.status)
+      throw error("No Page Data ...")
   }
 }
