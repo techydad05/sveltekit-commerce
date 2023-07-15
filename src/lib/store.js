@@ -16,7 +16,11 @@ export const collectionProducts = writable([]);
 export const allProducts = writable([]);
 export const collections = writable([]);
 
-const getAllProducts = async () => {
+export const getProductByHandle = (handle) => {
+  return client.products.list({handle: handle}).then((res) => res)
+}
+
+const getAllProducts = () => {
   return client.products.list().then((res) => {
     allProducts.set(res.products);
     return res;
@@ -42,52 +46,32 @@ export async function getCollectionProducts(collection) {
   });
 }
 
-// export const getCollections = async () => {
-//   const client = createClient();
-//   const collections = await  client.collections.list();
-//   return collections;
-// }
-
-export const getProducts = async () => {
-  const client = createClient();
-  const { products } = await client.products.list();
-  // console.log("Products:", products)
-  // check for featured product to set main hero if it doesnt
-  // exist then a default hero one will be used
-  products.forEach(product => {
-    if (product.tags[0] && product.tags[0].value === "featured") {
-      featuredProduct.set(product);
-    }
-  });
-  return products;
-};
-
 export const getProductsByTag = async (searchTags) => {
-  const client = createClient();
-  let tagArr = getProductTags();
+  let tagArr = await getProductTags();
   searchTags = searchTags.split(',');
   let filteredTags = [];
-  (await tagArr).forEach(tag => {
+  (tagArr).forEach(tag => {
     if (searchTags.includes(tag.value)) {
        filteredTags.push(tag.id)
     } 
   });
-  const { products } = await client.products.list({tags: filteredTags})
-  productsByTag.set(products);
-  return products;
+  return client.products.list({tags: filteredTags}).then((res) => {
+    productsByTag.set(res.products);
+    return res;
+  })
 };
 
-export const getProductTags = async () => {
+export const getProductTags = () => {
   const client = createClient();
-  const { product_tags } = await client.productTags.list();
-  let tagArr = [];
-  product_tags.forEach(({ id, value }) => {
-    tagArr.push({ id, value });
+  return client.productTags.list().then((res) => {
+    const tagArr = [];
+    res.product_tags.forEach(({ id, value }) => {
+      tagArr.push({ id, value });
+    });
+    productTags.set(tagArr);
+    return tagArr;
   });
-  productTags.set(tagArr);
-  return tagArr;
 }
-
 
 // todo: change this to medusa cart
 export const getCartItems = async () => {

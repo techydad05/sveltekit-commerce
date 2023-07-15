@@ -147,13 +147,24 @@
           class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] min-w-[300px] p-4 opacity-100 shadow"
         >
           <li><SearchBar /></li>
+          <li>
+            <a
+              data-sveltekit-prefetch
+              href={`${$page.url.origin}/search/`}
+              class={`border-b-secondary-focus hover:text-primary block border-b-2 px-2 py-1 text-center text-lg ${
+                currentRoute === '/search' ? 'text-primary-focus' : 'text-secondary'
+              }`}
+              style="border-radius: 0 !important;">All</a
+            >
+          </li>
           {#each menuItems as tab}
             <li on:click={() => (showMenu = false)}>
+              {currentRoute === '/search/' + tab.handle}
               <a
                 data-sveltekit-prefetch
                 href={`${$page.url.origin}/search/${tab.handle}`}
-                class={`text-secondary border-b-secondary-focus hover:text-primary block border-b-2 px-2 py-1 text-center text-lg ${
-                  currentRoute === tab.handle ? 'text-primary-focus' : 'text-secondary'
+                class={`border-b-secondary-focus hover:text-primary block border-b-2 px-2 py-1 text-center text-lg ${
+                  currentRoute === '/search/' + tab.handle ? 'text-primary-focus' : 'text-secondary'
                 }`}
                 style="border-radius: 0 !important;">{tab.title}</a
               >
