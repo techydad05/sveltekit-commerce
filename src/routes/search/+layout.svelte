@@ -1,7 +1,10 @@
 <div class="flex">
   <nav class="col-span-2 hidden w-1/6 flex-none py-8 pl-6 lg:block">
     <h1 class="text-lg font-semibold">Categories</h1>
-    <!-- <ul>
+    <ul>
+      <li class="mt-2 text-sm text-gray-300">
+        <p>fix this part to be the collections</p>
+      </li>
       <li class="mt-2 text-sm text-gray-300">
         <a
           data-sveltekit-prefetch
@@ -29,7 +32,7 @@
           href="/search/clothes">Apparel</a
         >
       </li>
-    </ul> -->
+    </ul>
   </nav>
   <div class="min-h-screen">
     <slot />

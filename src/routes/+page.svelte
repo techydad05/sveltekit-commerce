@@ -2,19 +2,22 @@
   import ThreeItemGrid from '$components/ThreeItemGrid.svelte';
   import Carousel from '$components/Carousel.svelte';
   import DaisyHero from '$components/DaisyHero.svelte';
-  import { onMount } from 'svelte';
-  // import { getProducts, featuredProduct } from '$lib/store';
 
   /** @type {import('./$types').PageData} */
   export let data;
+  const { pageData } = data;
+  const homeProduct = pageData.homeProduct;
+  const featuredProducts = pageData.featuredProducts;
+  console.log(featuredProducts)
 
-  $: allProducts = data.products;
-  $: homeProduct = data.products.filter((product) =>
-    product.tags.some((tag) => tag.value === 'home')
-  )[0];
-  $: featuredProducts = data.products.filter((product) =>
-    product.tags.some((tag) => tag.value === 'featured' || tag.value === 'hott')
-  );
+  // $: homeProduct = data.products.filter((product) =>
+  //   product.tags.some((tag) => tag.value === 'home')
+  // )[0];
+  // $: featuredProducts = data.products.filter((product) =>
+  //   product.tags.some((tag) => tag.value === 'featured' || tag.value === 'hott')
+  // );
+
+  
 </script>
 
 <svelte:head>
@@ -41,8 +44,8 @@
     {/if}
   </section>
   <section>
-    {#if allProducts}
-      <Carousel items={allProducts} />
+    {#if featuredProducts}
+      <Carousel items={featuredProducts} />
     {/if}
   </section>
   <section>

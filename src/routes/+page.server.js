@@ -1,32 +1,22 @@
-// import { getAllCollections } from '$utils/shopify';
 import { error } from '@sveltejs/kit';
-// import axios from "axios";
-import { getProducts } from '$lib/store';
+import { getProductsByTag } from '$lib/store';
 
 /** @type {import('./$types').RequestHandler} */
 export async function load() {
-  // const { collections } = await getCollections();
-  const products = getProducts();
-  if (products) {
-    return {
-      products
+  const resOne = await getProductsByTag('home');
+  const resTwo = await getProductsByTag('featured');
+  if (resOne.response.status === 200 && resTwo.response.status === 200) {
+    if (resOne.products) {
+      return {
+        pageData: {
+          homeProduct: resOne.products[0],
+          featuredProducts: resTwo.products
+        }
+      };
     }
     throw error(404)
   } else {
-    throw error("NO PRODUCTS FOUND!")
+    let status = resOne.response.status !== 200 ? resOne.response.status : resTwo.response.status;
+    throw error(status);
   }
 }
-
-// export async function load({ url }) {
-//   const res = await getAllCollections();
-//   if (res.status === 200) {
-//     const products = res.body?.data?.collections?.edges;
-
-//     if (products) {
-//       return { products };
-//     }
-//     throw error(404);
-//   } else {
-//     throw error(res.status);
-//   }
-// }

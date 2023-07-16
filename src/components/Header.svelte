@@ -40,12 +40,6 @@
 
   $: currentRoute = $page.url.pathname;
 
-  // let tabs = [
-  //   { name: 'All', path: '/search' },
-  //   { name: 'Featured', path: '/search/featured' },
-  //   { name: 'Apparel', path: '/search/clothes' }
-  // ];
-
   let theme_array = [
     'light',
     'dark',
@@ -159,7 +153,6 @@
           </li>
           {#each menuItems as tab}
             <li on:click={() => (showMenu = false)}>
-              {currentRoute === '/search/' + tab.handle}
               <a
                 data-sveltekit-prefetch
                 href={`${$page.url.origin}/search/${tab.handle}`}
