@@ -16,9 +16,6 @@ export const collectionProducts = writable([]);
 export const allProducts = writable([]);
 export const collections = writable([]);
 
-export const getProductByHandle = (handle) => {
-  return client.products.list({handle: handle}).then((res) => res)
-}
 
 const getAllProducts = () => {
   return client.products.list().then((res) => {
@@ -44,6 +41,10 @@ export async function getCollectionProducts(collection) {
     collectionProducts.set(res.products);
     return res;
   });
+}
+
+export const getProductByHandle = (handle) => {
+  return client.products.list({handle: handle}).then((res) => res)
 }
 
 export const getProductsByTag = async (searchTags) => {
@@ -76,7 +77,6 @@ export const getProductTags = () => {
 // todo: change this to medusa cart
 export const getCartItems = async () => {
   let cartId = JSON.parse(localStorage.getItem('cartId'));
-
   try {
     const shopifyResponse = await loadCart(cartId);
 

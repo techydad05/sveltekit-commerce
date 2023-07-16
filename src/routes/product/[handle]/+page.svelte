@@ -7,28 +7,29 @@
   /** @type {import('./$types').PageData} */
   export let data;
   const { pageData } = data;
-  console.log("pageData:", pageData);
+  const product = pageData.product;
+  const featuredProducts = pageData.featuredProducts;
 
   let selectedOptions = {};
   let cartLoading = false;
   let currentImageIndex = 0;
 
-  $: highlightedImageSrc = pageData?.product?.thumbnail;
+  $: highlightedImageSrc = product?.images[currentImageIndex].url;
 
-  pageData?.product?.options.forEach((option) => {
+  product?.options.forEach((option) => {
     selectedOptions = { ...selectedOptions, [option.name]: option.values[0] };
   });
 
   function changeHighlightedImage(direction) {
     if (direction === 'next') {
-      if (currentImageIndex + 1 < pageData?.product?.images?.length) {
+      if (currentImageIndex + 1 < product?.images?.length) {
         currentImageIndex = currentImageIndex + 1;
       } else {
         currentImageIndex = 0;
       }
     } else {
       if (currentImageIndex === 0) {
-        currentImageIndex = pageData?.product?.images?.length - 1;
+        currentImageIndex = product?.images?.length - 1;
       } else {
         currentImageIndex = currentImageIndex - 1;
       }
@@ -44,7 +45,7 @@
   //     cartId = JSON.parse(localStorage.getItem('cartId'));
   //   }
 
-  //   data.body.product.variants.edges.forEach((variant) => {
+  //   product.variants.edges.forEach((variant) => {
   //     let result = variant.node.selectedOptions.every((option) => {
   //       return selectedOptions[option.name] === option.value;
   //     });
@@ -65,7 +66,7 @@
 </script>
 
 <svelte:head>
-  <title>{pageData.product.title}</title>
+  <title>{product.title}</title>
 </svelte:head>
 
 <div>
@@ -73,27 +74,27 @@
     <div class="flex flex-col md:flex-row">
       <div class="md:h-90 md:w-2/3">
         {#key highlightedImageSrc}
-          <div class="relative h-4/5 bg-light">
+          <div class="bg-light relative h-4/5">
             <GridTile
-              title={pageData.product.title}
-              price={pageData.product.variants[0].prices[0].amount}
-              currencyCode={pageData.product.variants[0].prices[0].currency_code}
+              title={product.title}
+              price={(product.variants[0].prices[0].amount/100).toFixed(2)}
+              currencyCode={product.variants[0].prices[0].currency_code.toUpperCase()}
               imageSrc={highlightedImageSrc}
             />
-            {#if pageData.product?.images?.length > 1}
+            {#if product?.images?.length > 1}
               <div class="absolute right-0 bottom-0 z-40 p-6 ">
                 <button
                   on:click={() => {
-                    changeHighlightedImage('back');
+                    changeHighlightedImage('back');                    
                   }}
-                  class="border border-b border-t border-l border-black py-4 px-8"
+                  class="btn btn-primary"
                   ><Icons type="arrowLeft" /></button
                 >
                 <button
                   on:click={() => {
                     changeHighlightedImage('next');
                   }}
-                  class="-ml-1 border border-black py-4 px-8"><Icons type="arrowRight" /></button
+                  class="btn btn-primary"><Icons type="arrowRight" /></button
                 >
               </div>
             {/if}
@@ -113,26 +114,26 @@
         </div>
       </div>
       <div class="h-full p-6 md:w-1/3">
-        {#each pageData.product.options as option}
+        {#each product.options as option}
           <div class="mb-8">
-            <div class="mb-4 text-sm uppercase tracking-wide">{option.name}</div>
+            <div class="mb-4 text-sm uppercase tracking-wide">{option.title}</div>
             <div class="flex">
               {#each option.values as value}
                 <button
                   on:click={() => {
-                    selectedOptions = { ...selectedOptions, [option.name]: value };
+                    selectedOptions = { ...selectedOptions, [option.value]: value };
                   }}
-                  class={`${value.length <= 3 ? 'w-12' : 'px-2'} ${
-                    selectedOptions[option.name] === value ? 'opacity-100' : 'opacity-60'
-                  } transition duration-300 ease-in-out hover:scale-110 hover:opacity-100 border-white h-12 mr-3 flex items-center justify-center rounded-full border`}
+                  class={`${value.length <= 3 ? 'w-12' : 'px-6'} ${
+                    selectedOptions[option.value] === value ? 'btn-primary' : 'btn-primary-accent'
+                  } btn btn-lg mx-1`}
                 >
-                  {value}
+                  {value.value}
                 </button>
               {/each}
             </div>
           </div>
         {/each}
-        <p class="text-sm">{pageData.product.description}</p>
+        <p class="text-sm">{product.description}</p>
         <div class="mt-8 flex items-center justify-between">
           <div class="flex items-center">
             <div class="mr-1">
@@ -154,8 +155,8 @@
           <div class="text-sm opacity-50">36 Reviews</div>
         </div>
         <button
-          on:click={alert("work on addToCart function")}
-          class="mt-6 flex w-full items-center justify-center bg-light p-4 text-sm uppercase tracking-wide text-black opacity-90 hover:opacity-100"
+          on:click={() => alert('work on addToCart function')}
+          class="bg-light mt-6 flex w-full items-center justify-center p-4 text-sm uppercase tracking-wide text-black opacity-90 hover:opacity-100"
         >
           <span>Add To Cart</span>
           {#if cartLoading}
@@ -167,20 +168,18 @@
             </div>
           {/if}
         </button>
-        <DescriptionToggle
-          title="Care"
-          description="This is a limited edition production run. Printing starts when the drop ends."
-        />
-        <DescriptionToggle
-          title="Details"
-          description="This is a limited edition production run. Printing starts when the drop ends. Reminder: Bad Boys For Life. Shipping may take 10+ days due to COVID-19."
-        />
+        {#if product.metadata.care}
+          <DescriptionToggle title="Care" description={product.metadata.care} />
+        {/if}
+        {#if product.metadata.details}
+          <DescriptionToggle title="Details" description={product.metadata.details} />
+        {/if}
       </div>
     </div>
     <div class="px-4 py-8">
       <div class="mb-4 text-3xl font-bold">Related Products</div>
       <ul class="grid grid-flow-row grid-cols-2 gap-4 md:grid-cols-4">
-        {#each pageData.featuredProducts as product, i (product.id)}
+        {#each featuredProducts as product, i (product.id)}
           <li>
             <div
               class="group relative block aspect-square overflow-hidden border border-white/20 bg-zinc-800/50"

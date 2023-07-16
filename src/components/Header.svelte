@@ -138,9 +138,10 @@
         <ul
           tabindex="0"
           transition:fly={{ x: '100', y: 0, easing: quadInOut, duration: 250 }}
-          class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] min-w-[300px] p-4 opacity-100 shadow"
+          class="overflow-hidden menu menu-normal border-2 border-t-0 border-r-0 border-secondary bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] min-w-[300px] p-4 opacity-100 shadow-lg"
         >
           <li><SearchBar /></li>
+          <div class:rideCart={showMenu}><Icons type="shopping-cart" /></div>
           <li>
             <a
               data-sveltekit-prefetch
@@ -173,6 +174,20 @@
 </div>
 
 <style>
+  .rideCart {
+    animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards;
+  }
+  @keyframes ridingCart {
+    0% {
+      transform: translateX(0);    
+    }
+    50% {
+      transform: translateX(130%);    
+    }
+    100% {
+      transform: translateX(70%);
+    }
+  }
   .open-menu {
     visibility: visible !important;
     opacity: 1 !important;

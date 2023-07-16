@@ -121,7 +121,7 @@
   data-theme={theme ?? 'dark'}
   class={`${showCart ? 'h-screen' : 'min-h-screen'} overflow-hidden text-white`}
 >
-  <Header menuItems={data?.collections} bind:new_theme={theme} on:openCart={openCart}>
+  <Header menuItems={collections} bind:new_theme={theme} on:openCart={openCart}>
     <div use:clickOutside={hideCart} slot="cart">
       {#if showCart}
         <ShoppingCart
