@@ -1,5 +1,7 @@
 <script>
   import { onMount } from 'svelte';
+  export let data;
+  console.log(data);
 
   onMount(() => {
     const next = document.querySelector('.carousel__btn--next'),
@@ -20,6 +22,36 @@
 </script>
 
 <div class="carousel">
+  <div class="carousel__cards">
+    {#each Array(9) as _, index}
+      <div class="carousel__card">
+        <div class="card glass h-full w-full">
+          <figure class="absolute z-0 h-full">
+            <img src={data.pageData.product?.images[0].url} alt="car!" />
+          </figure>
+          <div class="card-body z-10">
+            <h2
+              class="text-secondary absolute left-0 bottom-0 w-full text-center text-3xl font-medium"
+            >
+              {data.pageData.product.title}
+            </h2>
+            <!-- <p class="text-2xl text-primary absolute bottom-0">{data.pageData.product.description}</p> -->
+            <div class="card-actions justify-end">
+              <button class="btn btn-sm btn-secondary-accent absolute top-0 right-0 rounded-none"
+                >Add To Cart</button
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    {/each}
+  </div>
+  <div class="carousel__control">
+    <button class="carousel__btn carousel__btn--back">&#8678; Prev</button>
+    <button class="carousel__btn carousel__btn--next">Next &#8680;</button>
+  </div>
+</div>
+<!-- <div class="carousel">
   <div class="carousel__cards">
     <div class="carousel__card">
       <div class="card glass h-full w-full">
@@ -81,7 +113,7 @@
     <button class="carousel__btn carousel__btn--back">&#8678; Prev</button>
     <button class="carousel__btn carousel__btn--next">Next &#8680;</button>
   </div>
-</div>
+</div> -->
 
 <!-- <section class="py-12 sm:py-16"> 
     <div class="container mx-auto px-4">
