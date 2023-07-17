@@ -138,10 +138,10 @@
         <ul
           tabindex="0"
           transition:fly={{ x: '100', y: 0, easing: quadInOut, duration: 250 }}
-          class="overflow-hidden menu menu-normal border-2 border-t-0 border-r-0 border-secondary bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] min-w-[300px] p-4 opacity-100 shadow-lg"
+          class="overflow-hidden menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] min-w-[300px] p-4 opacity-100 shadow-lg"
         >
           <li><SearchBar /></li>
-          <div class:rideCart={showMenu}><Icons type="shopping-cart" /></div>
+          <div class:rideCart={showMenu}><div class="btn btn-link"><Icons type="shopping-cart" /></div></div>
           <li>
             <a
               data-sveltekit-prefetch
@@ -164,6 +164,7 @@
               >
             </li>
           {/each}
+          <a href="/testies">testies</a>
         </ul>
       {/if}
     </div>
@@ -175,7 +176,7 @@
 
 <style>
   .rideCart {
-    animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards;
+    animation: ridingCart 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards;
   }
 
   /* TRY TO USE MARGIN INSTEAD OF TRANSFORM FOR POSITION AND USE SCALE TO FLIP?  */
@@ -187,7 +188,7 @@
       transform: translateX(110%);
     }
     80% {
-      transform: translateX(110%) scaleX(-1);
+      transform: translateX(110%)  scaleX(-1);
     }
     100% {
       transform: translateX(-9%) scaleX(-1);

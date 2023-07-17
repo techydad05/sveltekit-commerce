@@ -72,15 +72,25 @@
 <div>
   {#if pageData.product}
     <div class="flex flex-col md:flex-row">
-      <div class="md:h-90 md:w-2/3">
+      <div class="md:w-2/3">
         {#key highlightedImageSrc}
           <div class="bg-light relative h-4/5">
-            <GridTile
+            <div class="card w-96 glass">
+              <figure><img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="car!"/></figure>
+              <div class="card-body">
+                <h2 class="card-title">Life hack</h2>
+                <p>How to park your car at your garage?</p>
+                <div class="card-actions justify-end">
+                  <button class="btn btn-primary">Learn now!</button>
+                </div>
+              </div>
+            </div>
+            <!-- <GridTile
               title={product.title}
               price={(product.variants[0].prices[0].amount/100).toFixed(2)}
               currencyCode={product.variants[0].prices[0].currency_code.toUpperCase()}
               imageSrc={highlightedImageSrc}
-            />
+            /> -->
             {#if product?.images?.length > 1}
               <div class="absolute right-0 bottom-0 z-40 p-6 ">
                 <button
@@ -168,12 +178,11 @@
             </div>
           {/if}
         </button>
-        {#if product.metadata.care}
-          <DescriptionToggle title="Care" description={product.metadata.care} />
-        {/if}
-        {#if product.metadata.details}
-          <DescriptionToggle title="Details" description={product.metadata.details} />
-        {/if}
+        {#if product.metadata}
+          {#each Object.entries(product.metadata) as metadata}
+            <DescriptionToggle title={metadata[0].charAt(0).toUpperCase() + metadata[0].slice(1)} description={metadata[1]} />
+          {/each}
+        {/if  }
       </div>
     </div>
     <div class="px-4 py-8">
