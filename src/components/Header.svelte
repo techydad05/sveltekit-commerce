@@ -177,15 +177,20 @@
   .rideCart {
     animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards;
   }
+
+  /* TRY TO USE MARGIN INSTEAD OF TRANSFORM FOR POSITION AND USE SCALE TO FLIP?  */
   @keyframes ridingCart {
     0% {
-      transform: translateX(0);    
+      transform: translateX(0);
     }
     50% {
-      transform: translateX(130%);    
+      transform: translateX(110%);
+    }
+    80% {
+      transform: translateX(110%) scaleX(-1);
     }
     100% {
-      transform: translateX(70%);
+      transform: translateX(-9%) scaleX(-1);
     }
   }
   .open-menu {
