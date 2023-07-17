@@ -75,22 +75,12 @@
       <div class="md:w-2/3">
         {#key highlightedImageSrc}
           <div class="bg-light relative h-4/5">
-            <div class="card w-96 glass">
-              <figure><img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="car!"/></figure>
-              <div class="card-body">
-                <h2 class="card-title">Life hack</h2>
-                <p>How to park your car at your garage?</p>
-                <div class="card-actions justify-end">
-                  <button class="btn btn-primary">Learn now!</button>
-                </div>
-              </div>
-            </div>
-            <!-- <GridTile
+            <GridTile
               title={product.title}
               price={(product.variants[0].prices[0].amount/100).toFixed(2)}
               currencyCode={product.variants[0].prices[0].currency_code.toUpperCase()}
               imageSrc={highlightedImageSrc}
-            /> -->
+            />
             {#if product?.images?.length > 1}
               <div class="absolute right-0 bottom-0 z-40 p-6 ">
                 <button
@@ -206,7 +196,7 @@
   {/if}
 </div>
 
-<!-- <style>
+<style>
   .lds-ring {
     display: inline-block;
     position: relative;
@@ -242,4 +232,4 @@
       transform: rotate(360deg);
     }
   }
-</style> -->
+</style>
