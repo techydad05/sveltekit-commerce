@@ -115,7 +115,7 @@
     <div use:clickOutside={() => (showMenu = false)}>
       <label tabindex="0">
         <div
-          class="m-4 w-10 items-center justify-center rounded-full"
+          class="m-4 w-10 items-center justify-center rounded-full relative z-[100]"
           style="display:flex !important;"
         >
           <div class:open={showMenu} on:click={handleClick} id="nav-icon3">
