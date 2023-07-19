@@ -70,6 +70,12 @@
 </svelte:head>
 
 <div>
+  <div class="min-h-[calc(100vh-80px)] grid md:grid-cols-[2.5fr,1.5fr]">
+    <div class="bg-teal-400">
+
+    </div>
+    <div class="bg-blue-400"></div>
+  </div>
   {#if pageData.product}
     <div class="flex flex-col md:flex-row">
       <div class="md:w-2/3">
@@ -77,7 +83,7 @@
           <div class="bg-light relative h-4/5">
             <GridTile
               title={product.title}
-              price={(product.variants[0].prices[0].amount/100).toFixed(2)}
+              price={(product.variants[0].prices[0].amount / 100).toFixed(2)}
               currencyCode={product.variants[0].prices[0].currency_code.toUpperCase()}
               imageSrc={highlightedImageSrc}
             />
@@ -85,10 +91,9 @@
               <div class="absolute right-0 bottom-0 z-40 p-6 ">
                 <button
                   on:click={() => {
-                    changeHighlightedImage('back');                    
+                    changeHighlightedImage('back');
                   }}
-                  class="btn btn-primary"
-                  ><Icons type="arrowLeft" /></button
+                  class="btn btn-primary"><Icons type="arrowLeft" /></button
                 >
                 <button
                   on:click={() => {
@@ -170,9 +175,12 @@
         </button>
         {#if product.metadata}
           {#each Object.entries(product.metadata) as metadata}
-            <DescriptionToggle title={metadata[0].charAt(0).toUpperCase() + metadata[0].slice(1)} description={metadata[1]} />
+            <DescriptionToggle
+              title={metadata[0].charAt(0).toUpperCase() + metadata[0].slice(1)}
+              description={metadata[1]}
+            />
           {/each}
-        {/if  }
+        {/if}
       </div>
     </div>
     <div class="px-4 py-8">

@@ -7,6 +7,8 @@
   import { fly } from 'svelte/transition';
   import { elasticInOut, quintInOut, quadInOut } from 'svelte/easing';
 
+  let dumpCart = null;
+
   function clickOutside(element, callbackFunction) {
     function onClick(event) {
       if (!element.contains(event.target)) {
@@ -79,8 +81,9 @@
   }
 
   const handleClick = () => {
-    console.log(showMenu);
+    // console.log(showMenu);
     showMenu = !showMenu;
+    dumpCart = false;
     const elem = document.activeElement;
     dispatch('closeCart', true);
     if (elem) {
@@ -89,12 +92,94 @@
   };
 </script>
 
-<div class="navbar bg-base-100 relative z-[99] items-center shadow-md">
+<div class="navbar bg-neutral text-neutral-content relative h-[88px] justify-between">
+  <div class="h-full">
+    <a href="/" class="logo btn btn-ghost h-full text-xl normal-case">
+      <img src="/svelte_logo.png" alt="" class="h-[inherit]" />
+    </a>
+    <div class:hidden={showThemeChange} class="dropdown absolute">
+      <select
+        data-choose-theme
+        class="select select-bordered text-primary w-full"
+        bind:value={new_theme}
+      >
+        <option value={new_theme} class="text-primary"
+          ><Icons type="menu" />{new_theme ? new_theme : 'Select a theme'}</option
+        >
+        {#each theme_array as value}
+          <option {value} class="text-primary">{value}</option>
+        {/each}
+      </select>
+    </div>
+  </div>
+  <div>
+    <div use:clickOutside={() => (showMenu = false)}>
+      <label tabindex="0">
+        <div
+          class="m-4 w-10 items-center justify-center rounded-full"
+          style="display:flex !important;"
+        >
+          <div class:open={showMenu} on:click={handleClick} id="nav-icon3">
+            <span class="bg-primary rounded-btn" />
+            <span class="bg-primary rounded-btn" />
+            <span class="bg-primary rounded-btn" />
+            <span class="bg-primary rounded-btn" />
+          </div>
+        </div>
+      </label>
+      {#if showMenu}
+        <ul
+          tabindex="0"
+          transition:fly={{ x: '100', y: 0, easing: quadInOut, duration: 250 }}
+          class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] p-4 opacity-100 shadow-lg h-[calc(100vh-94px)] block overflow-hidden overflow-y-auto"
+        >
+          <li><SearchBar /></li>
+          <div class:rideCart={showMenu}>
+            <div
+              class:rotate={dumpCart}
+              class:unrotate={!dumpCart}
+              on:click={() => (dumpCart = !dumpCart)}
+              class="btn btn-link"
+            >
+              <Icons type="shopping-cart" />
+            </div>
+          </div>
+          <div class:open={dumpCart} class="cartdiv h-0 overflow-hidden">cart here</div>
+          <li>
+            <a
+              data-sveltekit-prefetch
+              href={`${$page.url.origin}/search/`}
+              class={`border-b-secondary-focus hover:text-primary block border-b-2 px-2 py-1 text-center text-lg ${
+                currentRoute === '/search' ? 'text-primary-focus' : 'text-secondary'
+              }`}
+              style="border-radius: 0 !important;">All</a
+            >
+          </li>
+          {#each menuItems as tab}
+            <li on:click={() => (showMenu = false)}>
+              <a
+                data-sveltekit-prefetch
+                href={`${$page.url.origin}/search/${tab.handle}`}
+                class={`border-b-secondary-focus hover:text-primary block border-b-2 px-2 py-1 text-center text-lg ${
+                  currentRoute === '/search/' + tab.handle ? 'text-primary-focus' : 'text-secondary'
+                }`}
+                style="border-radius: 0 !important;">{tab.title}</a
+              >
+            </li>
+          {/each}
+          <a href="/testies">testies</a>
+        </ul>
+      {/if}
+    </div>
+  </div>
+</div>
+
+<!-- <div class="navbar bg-base-100 relative z-[99] items-center shadow-md">
   <div class="flex-1" on:dblclick={() => (showThemeChange = !showThemeChange)}>
     <a href="/" class="btn btn-link logo mt-[-3%] text-xl normal-case"
       ><img
         alt="Svelte Logo"
-        class="logo w-[75px]"
+        class="logo w-[50px]"
         decoding="async"
         loading="eager"
         src="/svelte_logo.png"
@@ -172,14 +257,39 @@
   {#if !showMenu}
     <slot name="cart" />
   {/if}
-</div>
+</div> -->
+
 
 <style>
   .rideCart {
-    animation: ridingCart 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards;
+    animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.25s forwards;
   }
 
-  /* TRY TO USE MARGIN INSTEAD OF TRANSFORM FOR POSITION AND USE SCALE TO FLIP?  */
+  .rideCart .unrotate {
+    animation: undumpCart 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  .rideCart .rotate {
+    animation: dumpCart 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  @keyframes dumpCart {
+    from {
+      transform: rotate(0deg) translateY(0);
+    }
+    to {
+      transform: rotate(180deg) translateY(-20px);
+    }
+  }
+  @keyframes undumpCart {
+    from {
+      transform: rotate(180deg) translateY(-20px);
+    }
+    to {
+      transform: rotate(0deg) translateY(0);
+    }
+  }
+
   @keyframes ridingCart {
     0% {
       transform: translateX(0);
@@ -188,12 +298,17 @@
       transform: translateX(110%);
     }
     80% {
-      transform: translateX(110%)  scaleX(-1);
+      transform: translateX(110%) scaleX(-1);
     }
     100% {
       transform: translateX(-9%) scaleX(-1);
     }
   }
+
+  .cartdiv.open {
+    height: 200px;
+  }
+
   .open-menu {
     visibility: visible !important;
     opacity: 1 !important;
