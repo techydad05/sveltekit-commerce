@@ -92,7 +92,7 @@
   };
 </script>
 
-<div class="navbar bg-neutral text-neutral-content h-[88px] justify-between">
+<div class="navbar bg-neutral text-neutral-content relative h-[88px] justify-between">
   <div class="h-full max-w-[200px]">
     <a href="/" class="logo btn btn-ghost h-full text-xl normal-case">
       <img src="/svelte_logo.png" alt="" class="h-[inherit]" />
@@ -116,7 +116,7 @@
     <div use:clickOutside={() => (showMenu = false)}>
       <label tabindex="0">
         <div
-          class="m-4 w-10 items-center justify-center rounded-full z-[99]"
+          class="m-4 w-10 items-center justify-center rounded-full"
           style="display:flex !important;"
         >
           <div class:open={showMenu} on:click={handleClick} id="nav-icon3">
@@ -262,7 +262,7 @@
 
 <style>
   .rideCart {
-    animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.35s forwards;
+    animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.25s forwards;
   }
 
   .rideCart .unrotate {
