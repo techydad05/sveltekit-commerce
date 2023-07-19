@@ -3,7 +3,7 @@
   console.log($page);
 </script>
 
-<div class="text-primary breadcrumbs ml-2 text-md absolute">
+<div class="text-primary breadcrumbs ml-2 text-md fixed top-[90px] z-50">
   <ul>
     <li>
       <a href="/">
