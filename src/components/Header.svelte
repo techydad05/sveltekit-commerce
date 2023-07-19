@@ -131,7 +131,7 @@
         <ul
           tabindex="0"
           transition:fly={{ x: '100', y: 0, easing: quadInOut, duration: 250 }}
-          class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] p-4 opacity-100 shadow-lg h-[calc(100vh-94px)] block overflow-hidden overflow-y-auto"
+          class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] min-w-[300px] p-4 opacity-100 shadow-lg h-[calc(100vh-94px)] block overflow-hidden overflow-y-auto"
         >
           <li><SearchBar /></li>
           <div class:rideCart={showMenu}>
