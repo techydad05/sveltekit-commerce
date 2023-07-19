@@ -92,7 +92,7 @@
   };
 </script>
 
-<div class="navbar fixed z-50 bg-neutral text-neutral-content h-[88px] justify-between">
+<div class="navbar bg-neutral text-neutral-content h-[88px] justify-between">
   <div class="h-full max-w-[200px]">
     <a href="/" class="logo btn btn-ghost h-full text-xl normal-case">
       <img src="/svelte_logo.png" alt="" class="h-[inherit]" />
