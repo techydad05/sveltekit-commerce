@@ -81,7 +81,8 @@
   }
 
   const handleClick = () => {
-    // console.log(showMenu);
+    // console.log(showMenu)
+    alert('working');
     showMenu = !showMenu;
     dumpCart = false;
     const elem = document.activeElement;
