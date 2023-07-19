@@ -81,8 +81,6 @@
   }
 
   const handleClick = () => {
-    // console.log(showMenu)
-    alert('working');
     showMenu = !showMenu;
     dumpCart = false;
     const elem = document.activeElement;
@@ -93,7 +91,7 @@
   };
 </script>
 
-<div class="navbar bg-neutral text-neutral-content relative h-[88px] justify-between">
+<div class="navbar fixed z-[99] bg-neutral text-neutral-content h-[88px] justify-between">
   <div class="h-full max-w-[200px]">
     <a href="/" class="logo btn btn-ghost h-full text-xl normal-case">
       <img src="/svelte_logo.png" alt="" class="h-[inherit]" />
@@ -263,7 +261,7 @@
 
 <style>
   .rideCart {
-    animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.25s forwards;
+    animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.45s forwards;
   }
 
   .rideCart .unrotate {
