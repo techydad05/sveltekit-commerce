@@ -91,7 +91,7 @@
   };
 </script>
 
-<div class="navbar fixed z-[99] bg-neutral text-neutral-content h-[88px] justify-between">
+<div class="navbar bg-neutral text-neutral-content fixed z-[99] h-[88px] justify-between">
   <div class="h-full max-w-[200px]">
     <a href="/" class="logo btn btn-ghost h-full text-xl normal-case">
       <img src="/svelte_logo.png" alt="" class="h-[inherit]" />
@@ -115,7 +115,7 @@
     <div use:clickOutside={() => (showMenu = false)}>
       <label tabindex="0">
         <div
-          class="m-4 w-10 items-center justify-center rounded-full relative z-[100]"
+          class="relative z-[100] m-4 w-10 items-center justify-center rounded-full"
           style="display:flex !important;"
         >
           <div class:open={showMenu} on:click={handleClick} id="nav-icon3">
@@ -130,17 +130,18 @@
         <ul
           tabindex="0"
           transition:fly={{ x: '100', y: 0, easing: quadInOut, duration: 250 }}
-          class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 w-[30vw] min-w-[300px] p-4 opacity-100 shadow-lg h-[calc(100vh-94px)] block overflow-hidden overflow-y-auto"
+          class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 block h-[calc(100vh-94px)] w-[30vw] min-w-[300px] overflow-hidden overflow-y-auto p-4 opacity-100 shadow-lg"
         >
           <li><SearchBar /></li>
-          <div class:rideCart={showMenu}>
+          <div>
             <div
-              class:rotate={dumpCart}
-              class:unrotate={!dumpCart}
+              class:rideCart={showMenu}
               on:click={() => (dumpCart = !dumpCart)}
               class="btn btn-link"
             >
-              <Icons type="shopping-cart" />
+              <div class:rotate={dumpCart} class:unrotate={!dumpCart}>
+                <Icons type="shopping-cart" />
+              </div>
             </div>
           </div>
           <div class:open={dumpCart} class="cartdiv h-0 overflow-hidden">cart here</div>
@@ -257,32 +258,30 @@
     <slot name="cart" />
   {/if}
 </div> -->
-
-
 <style>
   .rideCart {
-    animation: ridingCart 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.45s forwards;
+    animation: ridingCart 1.75s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.35s forwards;
   }
 
-  .rideCart .unrotate {
+  .unrotate {
     animation: undumpCart 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   }
 
-  .rideCart .rotate {
+  .rotate {
     animation: dumpCart 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   }
 
   @keyframes dumpCart {
     from {
-      transform: rotate(0deg) translateY(0);
+      transform: rotate(0deg);
     }
     to {
-      transform: rotate(180deg) translateY(-20px);
+      transform: rotate(180deg);
     }
   }
   @keyframes undumpCart {
     from {
-      transform: rotate(180deg) translateY(-20px);
+      transform: rotate(180deg);
     }
     to {
       transform: rotate(0deg) translateY(0);
@@ -291,16 +290,17 @@
 
   @keyframes ridingCart {
     0% {
-      transform: translateX(0);
+      transform: translateX(0) rotate(0deg);
+      opacity: 0 !important;
     }
     50% {
-      transform: translateX(110%);
+      transform: translateX(240%) rotate(-25deg);
     }
     80% {
-      transform: translateX(110%) scaleX(-1);
+      transform: translateX(240%) scaleX(-1) rotate(-25deg);
     }
     100% {
-      transform: translateX(-9%) scaleX(-1);
+      transform: translateX(135%) scaleX(-1) rotate(0deg);
     }
   }
 
