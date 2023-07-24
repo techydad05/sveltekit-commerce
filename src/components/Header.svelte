@@ -33,10 +33,10 @@
   const dispatch = createEventDispatcher();
 
   // export let cart;
-  let dumpCart = true;
+  let dumpCart = false;
 
   // move this?
-  let showMenu = true;
+  let showMenu = false;
   let showThemeChange = true;
 
   export let menuItems;
@@ -223,6 +223,11 @@
                   </div>
                 </div>
               {/each}
+            {:else}
+              <div>
+                <h1 class="text-4xl">Your cart is empty.</h1>
+                Add some products<a href="/search"> here</a>
+              </div>
             {/if}
           </div>
           <li>
@@ -247,16 +252,16 @@
               >
             </li>
           {/each}
-          <li class="grid grid-rows-2 text-center">
-            <h1 class="text-center text-2xl">Check us out on social media!</h1>
-            <div class="grid grid-cols-3">
-              <a href="#">
+          <li class="mt-4 grid grid-rows-2 text-center">
+            <h1 class="hover:bg-base-100 text-center text-2xl">Check us out on social media!</h1>
+            <div class="hover:bg-base-100 grid grid-cols-3">
+              <a href="#" class="btn btn-outline hover:bg-secondary-focus">
                 <i class="fa-brands fa-facebook-f fa-2xl justify-center" />
               </a>
-              <a href="#">
+              <a href="#" class="btn btn-outline hover:bg-secondary-focus">
                 <i class="fa-brands fa-twitter fa-2xl justify-center" />
               </a>
-              <a href="#">
+              <a href="#" class="btn btn-outline hover:bg-secondary-focus">
                 <i class="fa-brands fa-instagram fa-2xl justify-center" />
               </a>
             </div>
@@ -315,7 +320,7 @@
 
   .cartdiv.open {
     height: 50%;
-    transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .open-menu {
