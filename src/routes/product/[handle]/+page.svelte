@@ -2,7 +2,7 @@
   import GridTile from '$components/GridTile.svelte';
   import DescriptionToggle from '$components/DescriptionToggle.svelte';
   import Icons from '$components/Icons.svelte';
-  import { getCartItems } from '$lib/store.js';
+  import { addToCart } from '$lib/store.js';
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -72,7 +72,16 @@
 <div>
   <div class="min-h-[calc(100vh-80px)] grid md:grid-cols-[2.5fr,1.5fr]">
     <div class="bg-teal-400">
-
+      <div class="hero min-h-screen" style="background-image: url(https://daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.jpg);">
+        <div class="hero-overlay bg-opacity-60"></div>
+        <div class="hero-content text-center text-neutral-content">
+          <div class="max-w-md">
+            <h1 class="mb-5 text-5xl font-bold">Hello there</h1>
+            <p class="mb-5">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
+            <button class="btn btn-primary">Get Started</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="bg-blue-400"></div>
   </div>
@@ -160,7 +169,7 @@
           <div class="text-sm opacity-50">36 Reviews</div>
         </div>
         <button
-          on:click={() => alert('work on addToCart function')}
+          on:click={() => addToCart(product.variants[0].id)}
           class="bg-light mt-6 flex w-full items-center justify-center p-4 text-sm uppercase tracking-wide text-black opacity-90 hover:opacity-100"
         >
           <span>Add To Cart</span>

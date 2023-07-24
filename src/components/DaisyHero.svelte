@@ -5,7 +5,7 @@
   export let form = null;
   export let featured = null;
   export let product = null;
-  console.log(product)
+  // console.log(product)
 </script>
 
 <div>

@@ -1,6 +1,5 @@
 <script>
   import { page } from '$app/stores';
-  console.log($page);
 </script>
 
 <div class="text-primary breadcrumbs ml-2 text-md fixed top-[90px] z-50">

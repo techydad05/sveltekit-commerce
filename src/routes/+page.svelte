@@ -8,7 +8,7 @@
   const { pageData } = data;
   const homeProduct = pageData.homeProduct;
   const featuredProducts = pageData.featuredProducts;
-  console.log(featuredProducts)
+  // console.log(featuredProducts)
 
   // $: homeProduct = data.products.filter((product) =>
   //   product.tags.some((tag) => tag.value === 'home')
