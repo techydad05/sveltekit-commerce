@@ -3,7 +3,7 @@ import { browser } from '$app/environment';
 // import { shopifyFetch } from '../utils/shopify.js';
 import { loadCart } from '$utils/shopify';
 import { createClient } from "../client.js";
-const client = createClient();
+// const client = createClient();
 
 export const cartQuantity = writable('');
 export const cartStore = writable([]);
@@ -28,6 +28,7 @@ export const collections = writable([]);
 
 export const initSetPaymentSession = async (cartId) => {
   console.log('inside initpaymentsessions')
+  const client = createClient();
   client.carts.createPaymentSessions(cartId)
   .then(async ({ cart }) => {
       const hasStripe = await cart.payment_sessions?.some((session) => session.provider_id === 'stripe');
@@ -47,6 +48,7 @@ export const initSetPaymentSession = async (cartId) => {
 }
 
 export const updateLineItem = async (line_id, quantity) => {
+  const client = createClient();
   const cart_id = localStorage.getItem("cart_id");
   await client.carts.lineItems.update(cart_id, line_id, { quantity }).then((res) => {
     console.log("lineitem updated:", res.cart);
@@ -55,6 +57,7 @@ export const updateLineItem = async (line_id, quantity) => {
 }
 
 export const addToCart = async (variant_id) => {
+  const client = createClient();
   const cartId = localStorage.getItem("cart_id");
   console.log("cartId:", cartId)
   console.log("variantId:", variant_id)
@@ -73,6 +76,7 @@ export const addToCart = async (variant_id) => {
 
 export const getCart = async () => {
   // searching for NA region id to create cart with will change later
+  const client = createClient();
   let regionID = null;
   const cartId = localStorage.getItem("cart_id");
   await client.regions.list().then((res) => {
@@ -101,6 +105,7 @@ export const getCart = async () => {
 }
 
 export const getCollections = async () => {
+  const client = createClient();
   return client.collections.list().then((res) => {
     collections.set(res.collections);
     return res;
@@ -108,6 +113,7 @@ export const getCollections = async () => {
 }
 
 export const getCollectionProducts = async (collection) => {
+  const client = createClient();
   const { collections } = await client.collections.list();
   let id = "";
   collections.forEach(col => {
@@ -120,10 +126,12 @@ export const getCollectionProducts = async (collection) => {
 }
 
 export const getProductByHandle = async (handle) => {
+  const client = createClient();
   return client.products.list({ handle: handle }).then((res) => res)
 }
 
 export const getProductsByTag = async (searchTags) => {
+  const client = createClient();
   let tagArr = await getProductTags();
   searchTags = searchTags.split(',');
   let filteredTags = [];
@@ -152,6 +160,7 @@ export const getProductTags = async () => {
 
 // todo: change this to medusa cart
 export const getCartItems = async () => {
+  const client = createClient();
   let cartId = JSON.parse(localStorage.getItem('cartId'));
   try {
     const shopifyResponse = await loadCart(cartId);
