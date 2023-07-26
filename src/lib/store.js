@@ -159,19 +159,19 @@ export const getProductTags = async () => {
 }
 
 // todo: change this to medusa cart
-export const getCartItems = async () => {
-  const client = createClient();
-  let cartId = JSON.parse(localStorage.getItem('cartId'));
-  try {
-    const shopifyResponse = await loadCart(cartId);
+// export const getCartItems = async () => {
+//   const client = createClient();
+//   let cartId = JSON.parse(localStorage.getItem('cartId'));
+//   try {
+//     const shopifyResponse = await loadCart(cartId);
 
-    let sum = 0;
-    shopifyResponse.body?.data?.cart?.lines?.edges?.forEach((d) => {
-      sum += d.node.quantity;
-    });
-    cartQuantity.set(sum);
-    return shopifyResponse;
-  } catch (error) {
-    console.log(error);
-  }
-};
+//     let sum = 0;
+//     shopifyResponse.body?.data?.cart?.lines?.edges?.forEach((d) => {
+//       sum += d.node.quantity;
+//     });
+//     cartQuantity.set(sum);
+//     return shopifyResponse;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
