@@ -83,12 +83,14 @@ export const getCart = async () => {
   if (regionID) {
     if (cartId) {
       return client.carts.retrieve(cartId).then((res) => {
+        console.log("cart found in local.");
         cartStore.set(res.cart)
         return res.cart;
       });
   
     } else {
       return client.carts.create({region_id: regionID}).then((res) => {
+        console.log("no cart in local.. creating cart.");
         cartStore.set(res.cart)
         return res.cart
       })
