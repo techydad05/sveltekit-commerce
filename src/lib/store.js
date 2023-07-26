@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+// import { browser } from '$app/environment';
 // import { shopifyFetch } from '../utils/shopify.js';
-import { loadCart } from '$utils/shopify';
+// import { loadCart } from '$utils/shopify';
 import { createClient } from "../client.js";
 // const client = createClient();
 
@@ -77,7 +77,7 @@ export const addToCart = async (variant_id) => {
 export const getCart = async () => {
   // searching for NA region id to create cart with will change later
   const client = createClient();
-  let regionID = null;
+  let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";
   const cartId = localStorage.getItem("cart_id");
   await client.regions.list().then((res) => {
     res.regions.forEach(region => {
