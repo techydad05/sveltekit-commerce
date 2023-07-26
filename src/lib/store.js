@@ -72,7 +72,7 @@ export const addToCart = async (variant_id) => {
 }
 
 export const getCart = async () => {
-  console.log("getting cart function testies!");
+  console.log("getting cart function testies!!!!");
   // searching for NA region id to create cart with will change later
   let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";
   const cartId = localStorage.getItem("cart_id");
@@ -83,7 +83,7 @@ export const getCart = async () => {
   // });
   if (regionID) {
     if (cartId) {
-      return client.carts.retrieve(cartId).then((res) => {
+      return await client.carts.retrieve(cartId).then((res) => {
         console.log("cart found in local.");
         cartStore.set(res.cart)
         return res.cart;

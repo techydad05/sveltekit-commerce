@@ -5,7 +5,7 @@
   import { getCart } from '$lib/store';
   import { onMount } from 'svelte';
 
-  // export const ssr = false;
+  export const ssr = false;
 
   export let data;
   let collections = data.collections;
