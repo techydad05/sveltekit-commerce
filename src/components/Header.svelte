@@ -177,7 +177,7 @@
                 Cart Total: ${($cartStore.total / 100).toFixed(2)}
               </h2>
               {#each $cartStore.items as item, i}
-                <div class="grid-rows-[2, minmax(auto, 1fr)] mb-1 grid border-2 border-white p-1">
+                <div class="relative grid-rows-[2, minmax(auto, 1fr)] mb-1 grid border-2 border-white p-1">
                   <div class="grid grid-cols-2">
                     <div><img class="h-full" src={item.thumbnail} alt="" height="100%" /></div>
                     <div class="relative">
@@ -190,6 +190,14 @@
                       </div>
                     </div>
                   </div>
+                  {#if cartQuantities[i] !== item.quantity}
+                    <div
+                      on:click={() => updateLineItem(item.id, cartQuantities[i])}
+                      class="btn btn-sm btn-warning absolute bottom-14 ml-[25%] w-1/2"
+                    >
+                      Update
+                    </div>
+                  {/if}
                   <div class="h-12">
                     <div class="grid w-full grid-cols-2">
                       <div class="flex h-12 items-center justify-center bg-gray-200">
