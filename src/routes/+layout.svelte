@@ -5,6 +5,8 @@
   import { getCart } from '$lib/store';
   import { onMount } from 'svelte';
 
+  // export const ssr = false;
+
   export let data;
   let collections = data.collections;
   let cartId;
@@ -48,7 +50,7 @@
       if (cartId === undefined || cartId === null) {
         const cart = await getCart();
         console.log('new cart:', cart);
-        localStorage.setItem('cart_id', cart.id);
+        // localStorage.setItem('cart_id', cart.id);
       } else {
         const cart = await getCart(cartId);
         console.log('cart from local:', cart);
