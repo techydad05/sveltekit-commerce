@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+// import { browser } from '$app/environment';
 // import { shopifyFetch } from '../utils/shopify.js';
 import { loadCart } from '$utils/shopify';
 import { createClient } from "../client.js";
@@ -74,31 +74,31 @@ export const addToCart = async (variant_id) => {
 export const getCart = async () => {
   console.log("getting cart function");
   // searching for NA region id to create cart with will change later
-  // let regionID = null;
-  // const cartId = localStorage.getItem("cart_id");
-  // await client.regions.list().then((res) => {
-  //   res.regions.forEach(region => {
-  //     region.name === "NA" ? regionID = region.id : null; 
-  //   });
-  // });
-  // if (regionID) {
-  //   if (cartId) {
-  //     return client.carts.retrieve(cartId).then((res) => {
-  //       console.log("cart found in local.");
-  //       cartStore.set(res.cart)
-  //       return res.cart;
-  //     });
+  let regionID = null;
+  const cartId = localStorage.getItem("cart_id");
+  await client.regions.list().then((res) => {
+    res.regions.forEach(region => {
+      region.name === "NA" ? regionID = region.id : null; 
+    });
+  });
+  if (regionID) {
+    if (cartId) {
+      return client.carts.retrieve(cartId).then((res) => {
+        console.log("cart found in local.");
+        cartStore.set(res.cart)
+        return res.cart;
+      });
   
-  //   } else {
-  //     return client.carts.create({region_id: regionID}).then((res) => {
-  //       console.log("no cart in local.. creating cart.");
-  //       cartStore.set(res.cart)
-  //       return res.cart
-  //     })
-  //   }
-  // } else {
-  //   console.log("must have NA region set in medusa admin or change code");
-  // }
+    } else {
+      return client.carts.create({region_id: regionID}).then((res) => {
+        console.log("no cart in local.. creating cart.");
+        cartStore.set(res.cart)
+        return res.cart
+      })
+    }
+  } else {
+    console.log("must have NA region set in medusa admin or change code");
+  }
 }
 
 export const getCollections = async () => {
@@ -152,18 +152,18 @@ export const getProductTags = async () => {
 }
 
 // todo: change this to medusa cart
-export const getCartItems = async () => {
-  let cartId = JSON.parse(localStorage.getItem('cartId'));
-  try {
-    const shopifyResponse = await loadCart(cartId);
+// export const getCartItems = async () => {
+//   let cartId = JSON.parse(localStorage.getItem('cartId'));
+//   try {
+//     const shopifyResponse = await loadCart(cartId);
 
-    let sum = 0;
-    shopifyResponse.body?.data?.cart?.lines?.edges?.forEach((d) => {
-      sum += d.node.quantity;
-    });
-    cartQuantity.set(sum);
-    return shopifyResponse;
-  } catch (error) {
-    console.log(error);
-  }
-};
+//     let sum = 0;
+//     shopifyResponse.body?.data?.cart?.lines?.edges?.forEach((d) => {
+//       sum += d.node.quantity;
+//     });
+//     cartQuantity.set(sum);
+//     return shopifyResponse;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
