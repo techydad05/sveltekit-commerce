@@ -72,15 +72,15 @@ export const addToCart = async (variant_id) => {
 }
 
 export const getCart = async () => {
-  console.log("getting cart functionnnnn");
+  console.log("getting cart function testies!");
   // searching for NA region id to create cart with will change later
   let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";
   const cartId = localStorage.getItem("cart_id");
-  await client.regions.list().then((res) => {
-    res.regions.forEach(region => {
-      region.name === "NA" ? regionID = region.id : null; 
-    });
-  });
+  // client.regions.list().then((res) => {
+  //   res.regions.forEach(region => {
+  //     region.name === "NA" ? regionID = region.id : null; 
+  //   });
+  // });
   if (regionID) {
     if (cartId) {
       return client.carts.retrieve(cartId).then((res) => {
