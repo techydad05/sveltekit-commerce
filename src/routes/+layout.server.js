@@ -1,4 +1,4 @@
-import { browser } from "$app/environment";
+// import { browser } from "$app/environment";
 import { getCollections } from "$lib/store";
 
 export async function load() {
@@ -7,7 +7,6 @@ export async function load() {
         return {
             collections: res.collections
         }
-        throw error(404)
     } else {
         throw error("No Page Data ...")
     }

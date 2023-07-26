@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 // import { shopifyFetch } from '../utils/shopify.js';
 // import { loadCart } from '$utils/shopify';
 import { createClient } from "../client.js";
-const client = createClient();
+let client = createClient();
 
 export const cartQuantity = writable('');
 export const cartStore = writable([]);
@@ -72,7 +72,7 @@ export const addToCart = async (variant_id) => {
 }
 
 export const getCart = async () => {
-  console.log("getting cart function testies!!!!");
+  console.log("getting cart function testies!0000!");
   // searching for NA region id to create cart with will change later
   let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";
   const cartId = localStorage.getItem("cart_id");
