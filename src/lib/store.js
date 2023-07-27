@@ -75,7 +75,8 @@ export const getCart = async () => {
   console.log("getting cart function testies!0000!");
   // searching for NA region id to create cart with will change later
   let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";
-  const cartId = localStorage.getItem("cart_id");
+  const cartId = null;
+  // const cartId = localStorage.getItem("cart_id");
   // client.regions.list().then((res) => {
   //   res.regions.forEach(region => {
   //     region.name === "NA" ? regionID = region.id : null; 
