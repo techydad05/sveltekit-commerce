@@ -2,13 +2,14 @@
   import '../app.css';
   import Header from '$components/Header.svelte';
   import Footer from '$components/Footer.svelte';
-  // import { getCart } from '$lib/store';
+  import { getCart, cartId } from '$lib/store';
+  import { getCartt } from '$lib/cartStore';
   import { onMount } from 'svelte';
 
   export let data;
-  console.log("data:", data);
+  console.log("data in main layout:", data);
+  
   let collections = data.collections;
-  let cartId;
   let theme = null;
   // let checkoutUrl;
   // let cartCreatedAt;
@@ -34,27 +35,36 @@
   // }
 
   onMount(async () => {
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('cart_id')) {
+        // console.log("setting cartId store");
+        // cartId.set(localStorage.getItem('cart_id'))
+        getCartt(localStorage.getItem('cart_id'))
+      } else {
+        getCartt()
+      }
+    }
     // if (typeof window !== 'undefined') {
-    //   // CLEAN ALL OF THIS STUFF UP IN HERE SOME I MAY NEED
-    //   // MAY NEED SOME OF THIS COMMENTED OUT STUFF ADD BACK IF NEEDED
-    //   //  **** MOVE THIS CART STUFF OUT OF HERE AND INTO STORE USING LOCALSTORAGE IN STORE FILE ****
-    //   // cartCreatedAt = JSON.parse(localStorage.getItem('cartCreatedAt'));
-    //   // checkoutUrl = JSON.parse(localStorage.getItem('cartUrl'));
+      //   // CLEAN ALL OF THIS STUFF UP IN HERE SOME I MAY NEED
+      //   // MAY NEED SOME OF THIS COMMENTED OUT STUFF ADD BACK IF NEEDED
+      //   //  **** MOVE THIS CART STUFF OUT OF HERE AND INTO STORE USING LOCALSTORAGE IN STORE FILE ****
+      //   // cartCreatedAt = JSON.parse(localStorage.getItem('cartCreatedAt'));
+      //   // checkoutUrl = JSON.parse(localStorage.getItem('cartUrl'));
     //   // let currentDate = Date.now();
     //   // let difference = currentDate - cartCreatedAt;
     //   // let totalDays = Math.ceil(difference / (1000 * 3600 * 24));
     //   // let cartIdExpired = totalDays > 6;
     //   cartId = localStorage.getItem('cart_id');
     //   // if (cartId === 'undefined' || cartId === 'null' || cartIdExpired) {
-    //   if (cartId === undefined || cartId === null) {
-    //     const cart = await getCart();
-    //     console.log('new cart:', cart);
-    //     // localStorage.setItem('cart_id', cart.id);
-    //   } else {
-    //     const cart = await getCart(cartId);
-    //     console.log('cart from local:', cart);
-    //   }
-    // }
+      //   if (cartId === undefined || cartId === null) {
+        //     const cart = await getCart();
+        //     console.log('new cart:', cart);
+        //     // localStorage.setItem('cart_id', cart.id);
+        //   } else {
+          //     const cart = await getCart(cartId);
+          //     console.log('cart from local:', cart);
+          //   }
+          // }
     theme = localStorage.getItem('theme');
   });
 </script>

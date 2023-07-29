@@ -5,7 +5,7 @@
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
   import { elasticInOut, quintInOut, quadInOut } from 'svelte/easing';
-  import { cartStore, updateLineItem } from '$lib/store';
+  import { cartStore, updateLineItem, cartId } from '$lib/store';
 
   function clickOutside(element, callbackFunction) {
     function onClick(event) {

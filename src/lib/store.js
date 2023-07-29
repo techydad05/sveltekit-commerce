@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 // import { shopifyFetch } from '../utils/shopify.js';
 // import { loadCart } from '$utils/shopify';
 import { createClient } from "../client.js";
-let client = createClient();
+const client = createClient();
 
 export const cartQuantity = writable('');
 export const cartStore = writable([]);
@@ -18,6 +18,8 @@ export const collectionProducts = writable([]);
 export const allProducts = writable([]);
 export const collections = writable([]);
 
+export const cartId = writable(null);
+
 
 // const getAllProducts = () => {
 //   return client.products.list().then((res) => {
@@ -29,21 +31,21 @@ export const collections = writable([]);
 export const initSetPaymentSession = async (cartId) => {
   console.log('inside initpaymentsessions')
   client.carts.createPaymentSessions(cartId)
-  .then(async ({ cart }) => {
+    .then(async ({ cart }) => {
       const hasStripe = await cart.payment_sessions?.some((session) => session.provider_id === 'stripe');
       // SETUP STRIPE!!!!
       if (!hasStripe) {
-          console.log("doesnt have stripe");
+        console.log("doesnt have stripe");
       } else {
-          console.log("has stripe");
-          if (cart) {
-              client.carts.setPaymentSession(cart.id, {provider_id: "stripe"}).then(res => {
-                  console.log("setting payment provider:", res.cart)
-                  cartStore.set(res.cart)
-              });
-          }
-      } 
-  });
+        console.log("has stripe");
+        if (cart) {
+          client.carts.setPaymentSession(cart.id, { provider_id: "stripe" }).then(res => {
+            console.log("setting payment provider:", res.cart)
+            cartStore.set(res.cart)
+          });
+        }
+      }
+    });
 }
 
 export const updateLineItem = async (line_id, quantity) => {
@@ -71,35 +73,58 @@ export const addToCart = async (variant_id) => {
   // toast.push(`<span class="text-4xl">😎</span> <h1 class="text-lg">Item Added!</h1>`)
 }
 
-export const getCart = async () => {
-  console.log("getting cart function testies!0000!");
+export const getCart = async (cartId) => {
+  console.log("getting cart function");
   // searching for NA region id to create cart with will change later
   let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";
-  const cartId = null;
+
+  if (!cartId) {
+    return await client.carts.create({ region_id: regionID }).then((res) => {
+      console.log("no cart in local.. creating cart:", res.cart);
+      cartStore.set(res.cart)
+      return res.cart
+    })
+  } else {
+    return await client.carts.retrieve(cartId).then((res) => {
+      console.log("cart found in local:", res.cart);
+      cartStore.set(res.cart)
+      return res.cart
+    })
+  }
+
+
+
+
+
+
+
+
+
+
   // const cartId = localStorage.getItem("cart_id");
-  // client.regions.list().then((res) => {
+  // await client.regions.list().then((res) => {
   //   res.regions.forEach(region => {
   //     region.name === "NA" ? regionID = region.id : null; 
   //   });
   // });
-  if (regionID) {
-    if (cartId) {
-      return await client.carts.retrieve(cartId).then((res) => {
-        console.log("cart found in local.");
-        cartStore.set(res.cart)
-        return res.cart;
-      });
-  
-    } else {
-      return client.carts.create({region_id: regionID}).then((res) => {
-        console.log("no cart in local.. creating cart.");
-        cartStore.set(res.cart)
-        return res.cart
-      })
-    }
-  } else {
-    console.log("must have NA region set in medusa admin or change code");
-  }
+  // if (regionID) {
+  //   if (cartId) {
+  //     return client.carts.retrieve(cartId).then((res) => {
+  //       console.log("cart found in local.");
+  //       cartStore.set(res.cart)
+  //       return res.cart;
+  //     });
+
+  //   } else {
+  //     return client.carts.create({region_id: regionID}).then((res) => {
+  //       console.log("no cart in local.. creating cart.");
+  //       cartStore.set(res.cart)
+  //       return res.cart
+  //     })
+  //   }
+  // } else {
+  //   console.log("must have NA region set in medusa admin or change code");
+  // }
 }
 
 export const getCollections = async () => {
