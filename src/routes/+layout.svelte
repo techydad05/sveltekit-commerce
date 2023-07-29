@@ -34,14 +34,6 @@
   //   };
   // }
 
-/** @type {import('./$types').PageLoad} */
-export async function load({ fetch, params }) {
-    const res = await fetch(`http://192.168.1.42:9002/store/carts/cart_01H6HF06JNY838C3WQJ0FCG3K0`);
-    const item = await res.json();
-    console.log("res:", {item});
-    return { item };
-}
-
   onMount(async () => {
     if (typeof window !== 'undefined') {
       if (localStorage.getItem('cart_id')) {
