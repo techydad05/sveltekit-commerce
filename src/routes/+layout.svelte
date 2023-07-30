@@ -2,8 +2,7 @@
   import '../app.css';
   import Header from '$components/Header.svelte';
   import Footer from '$components/Footer.svelte';
-  import { getCart, cartId } from '$lib/store';
-  import { getCartt } from '$lib/cartStore';
+  import { cartId } from '$lib/store';
   import { onMount } from 'svelte';
 
   export let data;
@@ -36,17 +35,13 @@
 
   onMount(async () => {
     if (typeof window !== 'undefined') {
-      if (localStorage.getItem('cart_id')) {
-        // console.log("setting cartId store");
-        // cartId.set(localStorage.getItem('cart_id'))
-        // getCartt(localStorage.getItem('cart_id'))
-      } else {
-        // getCartt()
-        const res = await fetch("http://192.168.1.42:9002/store/carts", { method: "POST"});
-        const { cart } = await res.json();
-        console.log("cart:", cart.id)
+      let cartID = localStorage.getItem('cart_id');
+      if (cartID) {
+        cartId.set(cartID);
       }
     }
+
+
     // if (typeof window !== 'undefined') {
       //   // CLEAN ALL OF THIS STUFF UP IN HERE SOME I MAY NEED
       //   // MAY NEED SOME OF THIS COMMENTED OUT STUFF ADD BACK IF NEEDED
@@ -70,6 +65,7 @@
           // }
     theme = localStorage.getItem('theme');
   });
+
 </script>
 
 <main data-theme={theme ?? 'dark'} class={`overflow-hidden text-white`}>

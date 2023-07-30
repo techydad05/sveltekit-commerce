@@ -56,24 +56,25 @@ export const updateLineItem = async (line_id, quantity) => {
   })
 }
 
-export const addToCart = async (variant_id) => {
-  const cartId = localStorage.getItem("cart_id");
-  console.log("cartId:", cartId)
+export const addLineItemToCart = async (cartID, variant_id) => {
+  console.log("cartId:", cartID)
   console.log("variantId:", variant_id)
-  const { cart } = await client.carts.lineItems.create(cartId, {
-    variant_id: variant_id,
-    quantity: 1,
-  })
-  console.log("Item added", cart);
-  cartStore.set(cart)
-  if (cart.payment_session === undefined) {
-    initSetPaymentSession(cart.id);
-  }
+  const cart = await getMedusaCart(cartID);
+  console.log("cart in addLineItemToCart:", cart)
+  // const { cart } = await client.carts.lineItems.create(cartId, {
+  //   variant_id: variant_id,
+  //   quantity: 1,
+  // })
+  // console.log("Item added", cart);
+  // cartStore.set(cart)
+  // if (cart.payment_session === undefined) {
+  //   initSetPaymentSession(cart.id);
+  // }
   // FIND NOTIFICATION LIB OR MAKE ONE TO USE IN THESE AREAS OR SOMEWHERE ELSE...
   // toast.push(`<span class="text-4xl">😎</span> <h1 class="text-lg">Item Added!</h1>`)
 }
 
-export const getCart = async (cartId) => {
+export const getMedusaCart = async (cartId) => {
   console.log("getting cart function");
   // searching for NA region id to create cart with will change later
   let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";

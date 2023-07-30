@@ -2,7 +2,7 @@
   import GridTile from '$components/GridTile.svelte';
   import DescriptionToggle from '$components/DescriptionToggle.svelte';
   import Icons from '$components/Icons.svelte';
-  import { addToCart } from '$lib/store.js';
+  import { addLineItemToCart, cartId } from '$lib/store.js';
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -13,8 +13,13 @@
   let selectedOptions = {};
   let cartLoading = false;
   let currentImageIndex = 0;
+  let cartID = '';
 
   $: highlightedImageSrc = product?.images[currentImageIndex].url;
+  cartId.subscribe((value) => {
+    console.log(value);
+    cartID = value;
+  });
 
   product?.options.forEach((option) => {
     selectedOptions = { ...selectedOptions, [option.name]: option.values[0] };
@@ -169,7 +174,7 @@
           <div class="text-sm opacity-50">36 Reviews</div>
         </div>
         <button
-          on:click={() => addToCart(product.variants[0].id)}
+          on:click={() => addLineItemToCart(cartID, product.variants[0].id)}
           class="bg-light mt-6 flex w-full items-center justify-center p-4 text-sm uppercase tracking-wide text-black opacity-90 hover:opacity-100"
         >
           <span>Add To Cart</span>

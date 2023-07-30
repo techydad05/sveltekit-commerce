@@ -19,7 +19,7 @@
           <p class="py-6">
             {product.description}
           </p>
-          <button class="btn btn-primary"><a href="/">Get Started</a></button>
+          <button class="btn btn-primary"><a href={`/product/${product.handle}`}>Get Started</a></button>
       </div>
     </div>
   {:else}
