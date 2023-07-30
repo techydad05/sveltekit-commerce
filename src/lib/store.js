@@ -75,6 +75,7 @@ export const addLineItemToCart = async (cartID, variant_id) => {
 }
 
 export const getMedusaCart = async (cartId) => {
+  const client = createClient();
   console.log("getting cart function");
   // searching for NA region id to create cart with will change later
   let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";
