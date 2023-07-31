@@ -39,13 +39,14 @@
     }
   }
 
-  const addToCart = (product, quantity) => {
+  const addToCart = (item, quantity) => {
 		$lineItems = [...$lineItems, {
-			id: product.variants[0].id,
-			amount: product.variants[0].prices[0].amount,
+			id: item.variants[0].id,
+      title: item.title,
+			amount: item.variants[0].prices[0].amount,
       quantity,
-      thumbnail: product.thumbnail,
-      subtotal: product.variants[0].prices[0].amount * quantity
+      thumbnail: item.thumbnail,
+      subtotal: item.variants[0].prices[0].amount * quantity
 		}];
     localStorage.setItem('lineitems', JSON.stringify($lineItems));
 	};

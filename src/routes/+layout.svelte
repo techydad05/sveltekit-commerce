@@ -39,6 +39,7 @@
       let localLineItems = JSON.parse(localStorage.getItem('lineitems'));
       if (localLineItems) {
         lineItems.set(localLineItems);
+        console.log(localLineItems)
       }
     }
 

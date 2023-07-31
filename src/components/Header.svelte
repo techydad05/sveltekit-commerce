@@ -4,8 +4,8 @@
   import SearchBar from '$components/SearchBar.svelte';
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
-  import { elasticInOut, quintInOut, quadInOut } from 'svelte/easing';
-  import { cartStore, updateLineItem, lineItems } from '$lib/store';
+  import { quadInOut } from 'svelte/easing';
+  import { updateLineItem, lineItems } from '$lib/store';
 
   function clickOutside(element, callbackFunction) {
     function onClick(event) {
@@ -28,7 +28,7 @@
     };
   }
 
-  // LEARN HOW TO USE THIS EVENT DISPATCHER MAYBE FOR
+  // LEARN HOW TO USE THIS EVENT DISPATCHER MAYBE FOR*****
   // MOVING THE CART STUFF BACK TO LAYOUT...
   const dispatch = createEventDispatcher();
 
@@ -43,10 +43,13 @@
     return a.title.localeCompare(b.title);
   });
   $: currentRoute = $page.url.pathname;
-  $: cartQuantities = getCartItemQuantities($cartStore);
+  // $: cartQuantities = getCartItemQuantities($lineItems);
   $: cartTotal = $lineItems.reduce((accumulator, item) => {
-    return accumulator + item.subtotal;
+    return accumulator + item.subtotal * item.quantity;
   }, 0);
+  
+  let origCartStr = JSON.stringify($lineItems);
+  
 
   let theme_array = [
     'light',
@@ -81,34 +84,39 @@
   ];
   export let new_theme;
 
-  // MOVE THESE TO THE MAIN LAYOUT AND ADD TO HEADER THROUGH DATA OR
-  // SOME OTHER WAY..
-  function getCartItemQuantities() {
-    let cartQuantities = [];
-    $cartStore.items?.forEach((item) => {
-      cartQuantities.push(item.quantity);
-    });
-    return cartQuantities;
-  }
-
+  // THIS CART STUFF NEEDS TO BE IN ITS OWN COMPONENTS WORK ON THAT!
   // ***** SET TOAST NOTIFICATIONS FOR ALL OF THE ADDING AND CHANGING ETC...
   // ALSO FOR UPDATING CART WITH ZERO TO JUST DELETE IT BUT WARN FIRST *****
   function updateCartQuantities(updateType, index, value) {
     value = Number.parseInt(value);
     if (updateType === 'dec') {
-      if (cartQuantities[index] !== 0) {
-        cartQuantities[index] = cartQuantities[index] - 1;
+      if ($lineItems[index].quantity !== 0) {
+        lineItems.update((v) => {
+          v[index].quantity -= 1;
+          return v;
+        });
       }
     } else if (updateType === 'inc') {
-      cartQuantities[index] = cartQuantities[index] + 1;
+      lineItems.update((v) => {
+        v[index].quantity += 1;
+        return v;
+      });
     } else {
       if (value === 0) {
         // add alert for removing item with
         // an ok button to confirm
       } else {
-        cartQuantities[index] = value;
+        lineItems.update((v) => {
+          v[index].quantity = value;
+          return v;
+        });
       }
     }
+  }
+
+  const updateLineItems = () => {
+    localStorage.setItem('lineitems', JSON.stringify($lineItems));
+    console.log("Cart updated!")
   }
 
   const handleClick = () => {
@@ -175,20 +183,59 @@
           </div>
           <div class:open={dumpCart} class="cartdiv h-0 overflow-hidden overflow-y-scroll">
             <!-- reworking cart section of menu -->
+            {#if JSON.stringify($lineItems) === origCartStr}
+              <div
+                on:click={() => updateLineItems()}
+                class="btn btn-sm btn-warning ml-[25%] w-1/2"
+              >
+                Update
+              </div>
+            {/if}
             <h2 class="text-center text-xl">
-              Cart Total: ${(cartTotal / 100).toFixed(2)}
+              Cart Subtotal: ${(cartTotal / 100).toFixed(2)}
             </h2>
             {#each $lineItems as item, i}
               <div
                 class="grid-rows-[2, minmax(auto, 1fr)] relative mb-1 grid border-2 border-white p-1"
               >
                 <div class="grid grid-cols-2">
-                  <div><img class="h-full" src={item.thumbnail} alt="" height="100%" /></div>
+                  <div><img class="h-[100px]" src={item.thumbnail} alt="" /></div>
                   <div class="relative">
                     <div class="btn btn-sm btn-warning absolute right-0 top-0 rounded-none">X</div>
                     <div class="absolute bottom-0">
-                      <p>Price: ${(item.subtotal / item.quantity / 100).toFixed(2)}</p>
-                      <p>Total: ${(item.subtotal / 100).toFixed(2)}</p>
+                      <p>Price: ${(item.subtotal / 100).toFixed(2)}</p>
+                      <p>Subtotal: ${((item.subtotal * item.quantity) / 100).toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-1 h-12">
+                  <div class="grid w-full grid-cols-2">
+                    <div class="flex h-12 items-center justify-center bg-gray-200">
+                      <h1 class="text-primary w-[80%] overflow-hidden text-ellipsis">
+                        {item.title}
+                      </h1>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1">
+                      <div
+                        on:click={() => updateCartQuantities('dec', i)}
+                        class:btn-disabled={item.quantity === 0}
+                        class="btn btn-secondary rounded-none"
+                      >
+                        -
+                      </div>
+                      <input
+                        type="text"
+                        value={item.quantity}
+                        on:change={(e) => updateCartQuantities('input', i, e.target.value)}
+                        class="text-center"
+                      />
+                      <!-- WORK ON ADDING AN INVENTORY LIMIT FOR INCREMENTING ITEM QUANTITY -->
+                      <div
+                        on:click={() => updateCartQuantities('inc', i)}
+                        class="btn btn-secondary rounded-none"
+                      >
+                        +
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -219,6 +266,7 @@
           {/each}
           <li class="mt-4 grid grid-rows-2 text-center">
             <h1 class="hover:bg-base-100 text-center text-2xl">Check us out on social media!</h1>
+            <!-- svelte-ignore a11y-invalid-attribute -->
             <div class="hover:bg-base-100 grid grid-cols-3">
               <a href="#" class="btn btn-outline hover:bg-secondary-focus">
                 <i class="fa-brands fa-facebook-f fa-2xl justify-center" />
@@ -304,7 +352,6 @@
   Add some products<a href="/search"> here</a>
 </div>
 {/if} -->
-
 <style>
   .rideCart {
     animation: ridingCart 1.75s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.35s forwards;
