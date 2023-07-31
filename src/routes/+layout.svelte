@@ -2,7 +2,7 @@
   import '../app.css';
   import Header from '$components/Header.svelte';
   import Footer from '$components/Footer.svelte';
-  import { cartId } from '$lib/store';
+  import { lineItems } from '$lib/store';
   import { onMount } from 'svelte';
 
   export let data;
@@ -34,10 +34,11 @@
   // }
 
   onMount(async () => {
+    // getting lineitems out of local if theyre there
     if (typeof window !== 'undefined') {
-      let cartID = localStorage.getItem('cart_id');
-      if (cartID) {
-        cartId.set(cartID);
+      let localLineItems = JSON.parse(localStorage.getItem('lineitems'));
+      if (localLineItems) {
+        lineItems.set(localLineItems);
       }
     }
 

@@ -5,9 +5,8 @@ import { writable } from 'svelte/store';
 import { createClient } from "../client.js";
 const client = createClient();
 
-export const cartQuantity = writable('');
+// export const cartQuantity = writable('');
 export const cartStore = writable([]);
-// export const cartStore2 = writable([]);
 export const search = writable('');
 export const headerHeight = writable(0);
 export const productStore = writable([]);
@@ -19,6 +18,7 @@ export const allProducts = writable([]);
 export const collections = writable([]);
 
 export const cartId = writable(null);
+export const lineItems = writable([]);
 
 
 // const getAllProducts = () => {
@@ -75,7 +75,6 @@ export const addLineItemToCart = async (cartID, variant_id) => {
 }
 
 export const getMedusaCart = async (cartId) => {
-  const client = createClient();
   console.log("getting cart function");
   // searching for NA region id to create cart with will change later
   let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";

@@ -5,7 +5,7 @@
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
   import { elasticInOut, quintInOut, quadInOut } from 'svelte/easing';
-  import { cartStore, updateLineItem, cartId } from '$lib/store';
+  import { cartStore, updateLineItem, lineItems } from '$lib/store';
 
   function clickOutside(element, callbackFunction) {
     function onClick(event) {
@@ -33,10 +33,9 @@
   const dispatch = createEventDispatcher();
 
   // export let cart;
-  let dumpCart = false;
-
+  let dumpCart = true;
   // move this?
-  let showMenu = false;
+  let showMenu = true;
   let showThemeChange = true;
 
   export let menuItems;
@@ -45,6 +44,9 @@
   });
   $: currentRoute = $page.url.pathname;
   $: cartQuantities = getCartItemQuantities($cartStore);
+  $: cartTotal = $lineItems.reduce((accumulator, item) => {
+    return accumulator + item.subtotal;
+  }, 0);
 
   let theme_array = [
     'light',
@@ -172,71 +174,26 @@
             </div>
           </div>
           <div class:open={dumpCart} class="cartdiv h-0 overflow-hidden overflow-y-scroll">
-            {#if $cartStore.items}
-              <h2 class="text-center text-xl">
-                Cart Total: ${($cartStore.total / 100).toFixed(2)}
-              </h2>
-              {#each $cartStore.items as item, i}
-                <div class="relative grid-rows-[2, minmax(auto, 1fr)] mb-1 grid border-2 border-white p-1">
-                  <div class="grid grid-cols-2">
-                    <div><img class="h-full" src={item.thumbnail} alt="" height="100%" /></div>
-                    <div class="relative">
-                      <div class="btn btn-sm btn-warning absolute right-0 top-0 rounded-none">
-                        X
-                      </div>
-                      <div class="absolute bottom-0">
-                        <p>Price: ${(item.subtotal / item.quantity / 100).toFixed(2)}</p>
-                        <p>Total: ${(item.subtotal / 100).toFixed(2)}</p>
-                      </div>
-                    </div>
-                  </div>
-                  {#if cartQuantities[i] !== item.quantity}
-                    <div
-                      on:click={() => updateLineItem(item.id, cartQuantities[i])}
-                      class="btn btn-sm btn-warning absolute bottom-14 ml-[25%] w-1/2"
-                    >
-                      Update
-                    </div>
-                  {/if}
-                  <div class="h-12">
-                    <div class="grid w-full grid-cols-2">
-                      <div class="flex h-12 items-center justify-center bg-gray-200">
-                        <h1 class="text-primary w-[80%] overflow-hidden text-ellipsis">
-                          {item.title}
-                        </h1>
-                      </div>
-                      <div class="grid grid-cols-3 gap-1">
-                        <div
-                          on:click={() => updateCartQuantities('dec', i)}
-                          class:btn-disabled={cartQuantities[i] === 0}
-                          class="btn btn-secondary rounded-none"
-                        >
-                          -
-                        </div>
-                        <input
-                          type="text"
-                          value={cartQuantities[i]}
-                          on:change={(e) => updateCartQuantities('input', i, e.target.value)}
-                          class="text-center"
-                        />
-                        <!-- WORK ON ADDING AN INVENTORY LIMIT FOR INCREMENTING ITEM QUANTITY -->
-                        <div
-                          on:click={() => updateCartQuantities('inc', i)}
-                          class="btn btn-secondary rounded-none"
-                        >
-                          +
-                        </div>
-                      </div>
+            <!-- reworking cart section of menu -->
+            <h2 class="text-center text-xl">
+              Cart Total: ${(cartTotal / 100).toFixed(2)}
+            </h2>
+            {#each $lineItems as item, i}
+              <div
+                class="grid-rows-[2, minmax(auto, 1fr)] relative mb-1 grid border-2 border-white p-1"
+              >
+                <div class="grid grid-cols-2">
+                  <div><img class="h-full" src={item.thumbnail} alt="" height="100%" /></div>
+                  <div class="relative">
+                    <div class="btn btn-sm btn-warning absolute right-0 top-0 rounded-none">X</div>
+                    <div class="absolute bottom-0">
+                      <p>Price: ${(item.subtotal / item.quantity / 100).toFixed(2)}</p>
+                      <p>Total: ${(item.subtotal / 100).toFixed(2)}</p>
                     </div>
                   </div>
                 </div>
-              {/each}
-            {:else}
-              <div>
-                <h1 class="text-4xl">Your cart is empty.</h1>
-                Add some products<a href="/search"> here</a>
               </div>
-            {/if}
+            {/each}
           </div>
           <li>
             <a
@@ -279,6 +236,74 @@
     </div>
   </div>
 </div>
+
+<!-- {#if $cartStore.items}
+<h2 class="text-center text-xl">
+  Cart Total: ${($cartStore.total / 100).toFixed(2)}
+</h2>
+{#each $cartStore.items as item, i}
+  <div
+    class="grid-rows-[2, minmax(auto, 1fr)] relative mb-1 grid border-2 border-white p-1"
+  >
+    <div class="grid grid-cols-2">
+      <div><img class="h-full" src={item.thumbnail} alt="" height="100%" /></div>
+      <div class="relative">
+        <div class="btn btn-sm btn-warning absolute right-0 top-0 rounded-none">
+          X
+        </div>
+        <div class="absolute bottom-0">
+          <p>Price: ${(item.subtotal / item.quantity / 100).toFixed(2)}</p>
+          <p>Total: ${(item.subtotal / 100).toFixed(2)}</p>
+        </div>
+      </div>
+    </div>
+    {#if cartQuantities[i] !== item.quantity}
+      <div
+        on:click={() => updateLineItem(item.id, cartQuantities[i])}
+        class="btn btn-sm btn-warning absolute bottom-14 ml-[25%] w-1/2"
+      >
+        Update
+      </div>
+    {/if}
+    <div class="h-12">
+      <div class="grid w-full grid-cols-2">
+        <div class="flex h-12 items-center justify-center bg-gray-200">
+          <h1 class="text-primary w-[80%] overflow-hidden text-ellipsis">
+            {item.title}
+          </h1>
+        </div>
+        <div class="grid grid-cols-3 gap-1">
+          <div
+            on:click={() => updateCartQuantities('dec', i)}
+            class:btn-disabled={cartQuantities[i] === 0}
+            class="btn btn-secondary rounded-none"
+          >
+            -
+          </div>
+          <input
+            type="text"
+            value={cartQuantities[i]}
+            on:change={(e) => updateCartQuantities('input', i, e.target.value)}
+            class="text-center"
+          />
+          WORK ON ADDING AN INVENTORY LIMIT FOR INCREMENTING ITEM QUANTITY
+          <div
+            on:click={() => updateCartQuantities('inc', i)}
+            class="btn btn-secondary rounded-none"
+          >
+            +
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{/each}
+{:else}
+<div>
+  <h1 class="text-4xl">Your cart is empty.</h1>
+  Add some products<a href="/search"> here</a>
+</div>
+{/if} -->
 
 <style>
   .rideCart {
