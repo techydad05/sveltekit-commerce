@@ -2,15 +2,18 @@
   import { page } from '$app/stores';
   import Icons from '$components/Icons.svelte';
   import SearchBar from '$components/SearchBar.svelte';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import { quadInOut } from 'svelte/easing';
-  import { updateLineItem, lineItems } from '$lib/store';
+  import { updateLineItem, lineItems, origCartStr } from '$lib/store';
+  import { browser } from '$app/environment';
+
 
   function clickOutside(element, callbackFunction) {
     function onClick(event) {
       if (!element.contains(event.target)) {
-        if (showMenu == true) {
+        if (showMenu === true && updating === false) {
+          console.log('running');
           callbackFunction();
         }
       }
@@ -34,22 +37,26 @@
 
   // export let cart;
   let dumpCart = true;
+  let updating = false;
+
   // move this?
-  let showMenu = true;
-  let showThemeChange = true;
+  let showMenu = false;
+  let showThemeChange = false;
 
   export let menuItems;
   $: menuItems = menuItems.sort(function (a, b) {
     return a.title.localeCompare(b.title);
   });
   $: currentRoute = $page.url.pathname;
-  // $: cartQuantities = getCartItemQuantities($lineItems);
+
   $: cartTotal = $lineItems.reduce((accumulator, item) => {
     return accumulator + item.subtotal * item.quantity;
   }, 0);
-  
-  let origCartStr = JSON.stringify($lineItems);
-  
+
+  // let origCartStr = '';
+  if (browser) {
+        origCartStr.set(localStorage.getItem('lineitems'));
+  }
 
   let theme_array = [
     'light',
@@ -112,13 +119,16 @@
         });
       }
     }
+    JSON.stringify($lineItems) !== $origCartStr ? updating = true : updating = false;
   }
-
+  
   const updateLineItems = () => {
     localStorage.setItem('lineitems', JSON.stringify($lineItems));
-    console.log("Cart updated!")
-  }
-
+    origCartStr.set(JSON.stringify($lineItems));
+    // updating = false;
+    console.log('Cart updated!');
+  };
+  
   const handleClick = () => {
     showMenu = !showMenu;
     dumpCart = false;
@@ -170,7 +180,12 @@
           class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 block h-[calc(100vh-94px)] w-[300px] overflow-hidden overflow-y-auto p-4 opacity-100 shadow-lg"
         >
           <li><SearchBar /></li>
-          <div>
+          <div class="relative">
+            {#if JSON.stringify($lineItems) !== $origCartStr}
+              <div on:click={() => updateLineItems()} class="btn btn-sm btn-warning absolute left-0 top-4 w-1/2">
+                Update
+              </div>
+            {/if}
             <div
               class:rideCart={showMenu}
               on:click={() => (dumpCart = !dumpCart)}
@@ -182,15 +197,7 @@
             </div>
           </div>
           <div class:open={dumpCart} class="cartdiv h-0 overflow-hidden overflow-y-scroll">
-            <!-- reworking cart section of menu -->
-            {#if JSON.stringify($lineItems) === origCartStr}
-              <div
-                on:click={() => updateLineItems()}
-                class="btn btn-sm btn-warning ml-[25%] w-1/2"
-              >
-                Update
-              </div>
-            {/if}
+            <div class="btn btn-primary btn-success w-full my-4"><a href="/checkout" class="no-underline">Checkout</a></div>
             <h2 class="text-center text-xl">
               Cart Subtotal: ${(cartTotal / 100).toFixed(2)}
             </h2>

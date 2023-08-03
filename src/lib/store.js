@@ -1,11 +1,7 @@
 import { writable } from 'svelte/store';
-// import { browser } from '$app/environment';
-// import { shopifyFetch } from '../utils/shopify.js';
-// import { loadCart } from '$utils/shopify';
 import { createClient } from "../client.js";
 const client = createClient();
 
-// export const cartQuantity = writable('');
 export const cartStore = writable([]);
 export const search = writable('');
 export const headerHeight = writable(0);
@@ -16,6 +12,7 @@ export const featuredProduct = writable([]);
 export const collectionProducts = writable([]);
 export const allProducts = writable([]);
 export const collections = writable([]);
+export const origCartStr = writable('')
 
 export const cartId = writable(null);
 export const lineItems = writable([]);
@@ -83,13 +80,13 @@ export const getMedusaCart = async (cartId) => {
     return await client.carts.create({ region_id: regionID }).then((res) => {
       console.log("no cart in local.. creating cart:", res.cart);
       cartStore.set(res.cart)
-      return res.cart
+      return res;
     })
   } else {
     return await client.carts.retrieve(cartId).then((res) => {
       console.log("cart found in local:", res.cart);
       cartStore.set(res.cart)
-      return res.cart
+      return res;
     })
   }
 

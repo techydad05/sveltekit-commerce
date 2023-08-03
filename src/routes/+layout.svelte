@@ -6,7 +6,7 @@
   import { onMount } from 'svelte';
 
   export let data;
-  console.log("data in main layout:", data);
+  // console.log("data in main layout:", data);
   
   let collections = data.collections;
   let theme = null;
@@ -39,7 +39,6 @@
       let localLineItems = JSON.parse(localStorage.getItem('lineitems'));
       if (localLineItems) {
         lineItems.set(localLineItems);
-        console.log(localLineItems)
       }
     }
 
@@ -72,7 +71,7 @@
 
 <main data-theme={theme ?? 'dark'} class={`overflow-hidden text-white`}>
   <Header menuItems={collections} bind:new_theme={theme} />
-  <div class="min-h-screen overflow-scroll">
+  <div class="min-h-screen overflow-scroll mt-[88px]">
     <slot />
     <Footer />
   </div>

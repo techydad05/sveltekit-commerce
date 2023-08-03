@@ -2,7 +2,7 @@
   import GridTile from '$components/GridTile.svelte';
   import DescriptionToggle from '$components/DescriptionToggle.svelte';
   import Icons from '$components/Icons.svelte';
-  import { lineItems } from '$lib/store';
+  import { lineItems, origCartStr } from '$lib/store';
   import { browser } from '$app/environment';
 
   /** @type {import('./$types').PageData} */
@@ -15,7 +15,6 @@
   let cartLoading = false;
   let currentImageIndex = 0;
   let quantity = 1;
-  // let cartID = '';
 
   $: highlightedImageSrc = product?.images[currentImageIndex].url;
 
@@ -40,44 +39,20 @@
   }
 
   const addToCart = (item, quantity) => {
-		$lineItems = [...$lineItems, {
-			id: item.variants[0].id,
-      title: item.title,
-			amount: item.variants[0].prices[0].amount,
-      quantity,
-      thumbnail: item.thumbnail,
-      subtotal: item.variants[0].prices[0].amount * quantity
-		}];
+    $lineItems = [
+      ...$lineItems,
+      {
+        id: item.variants[0].id,
+        title: item.title,
+        amount: item.variants[0].prices[0].amount,
+        quantity,
+        thumbnail: item.thumbnail,
+        subtotal: item.variants[0].prices[0].amount * quantity
+      }
+    ];
     localStorage.setItem('lineitems', JSON.stringify($lineItems));
-	};
-
-  // async function addToCart() {
-  //   cartLoading = true;
-  //   let variantId;
-  //   let cartId;
-
-  //   if (typeof window !== 'undefined') {
-  //     cartId = JSON.parse(localStorage.getItem('cartId'));
-  //   }
-
-  //   product.variants.edges.forEach((variant) => {
-  //     let result = variant.node.selectedOptions.every((option) => {
-  //       return selectedOptions[option.name] === option.value;
-  //     });
-  //     if (result) {
-  //       variantId = variant.node.id;
-  //     }
-  //   });
-
-  //   await fetch('/cart.json', {
-  //     method: 'PATCH',
-  //     body: JSON.stringify({ cartId: cartId, variantId: variantId })
-  //   });
-  //   // Wait for the API to finish before updating cart items
-  //   await getCartItems();
-
-  //   cartLoading = false;
-  // }
+    origCartStr.set(JSON.stringify($lineItems));
+  };
 </script>
 
 <svelte:head>
@@ -85,30 +60,9 @@
 </svelte:head>
 
 <div>
-  <div class="grid min-h-[calc(100vh-80px)] md:grid-cols-[2.5fr,1.5fr]">
-    <div class="bg-teal-400">
-      <div
-        class="hero min-h-screen"
-        style="background-image: url(https://daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.jpg);"
-      >
-        <div class="hero-overlay bg-opacity-60" />
-        <div class="hero-content text-neutral-content text-center">
-          <div class="max-w-md">
-            <h1 class="mb-5 text-5xl font-bold">Hello there</h1>
-            <p class="mb-5">
-              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi
-              exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button class="btn btn-primary">Get Started</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="bg-blue-400" />
-  </div>
   {#if pageData.product}
-    <div class="flex flex-col md:flex-row">
-      <div class="md:w-2/3">
+    <div class="grid min-h-[calc(100vh-80px)] md:grid-cols-[2.5fr,1.5fr]">
+      <div>
         {#key highlightedImageSrc}
           <div class="bg-light relative h-4/5">
             <GridTile
@@ -148,70 +102,79 @@
           {/each}
         </div>
       </div>
-      <div class="h-full p-6 md:w-1/3">
-        {#each product.options as option}
-          <div class="mb-8">
-            <div class="mb-4 text-sm uppercase tracking-wide">{option.title}</div>
-            <div class="flex">
-              {#each option.values as value}
-                <button
-                  on:click={() => {
-                    selectedOptions = { ...selectedOptions, [option.value]: value };
-                  }}
-                  class={`${value.length <= 3 ? 'w-12' : 'px-6'} ${
-                    selectedOptions[option.value] === value ? 'btn-primary' : 'btn-primary-accent'
-                  } btn btn-lg mx-1`}
-                >
-                  {value.value}
-                </button>
-              {/each}
+      <div>
+        <div class="h-full p-6 md:w-1/3">
+          {#each product.options as option}
+            <div class="mb-8">
+              <div class="mb-4 text-sm uppercase tracking-wide">{option.title}</div>
+              <div class="flex">
+                {#each option.values as value}
+                  <button
+                    on:click={() => {
+                      selectedOptions = { ...selectedOptions, [option.value]: value };
+                      product.id = value.variant_id;
+                      
+                    }}
+                    class={`${value.length <= 3 ? 'w-12' : 'px-6'} ${
+                      selectedOptions[option.value] === value ? 'btn-primary' : 'btn-primary-accent'
+                    } btn btn-lg mx-1`}
+                  >
+                    {value.value}
+                  </button>
+                {/each}
+              </div>
             </div>
-          </div>
-        {/each}
-        <p class="text-sm">{product.description}</p>
-        <div class="mt-8 flex items-center justify-between">
-          <div class="flex items-center">
-            <div class="mr-1">
-              <Icons type="star" />
-            </div>
-            <div class="mr-1">
-              <Icons type="star" />
-            </div>
-            <div class="mr-1">
-              <Icons type="star" />
-            </div>
-            <div class="mr-1">
-              <Icons type="star" />
-            </div>
-            <div class="mr-1 opacity-50">
-              <Icons type="star" />
-            </div>
-          </div>
-          <div class="text-sm opacity-50">36 Reviews **make this work</div>
-        </div>
-        <input value={quantity} class="mt-4 input input-primary" type="number" on:change={(e) => quantity = e.target.value}>
-        <button
-          on:click={() => addToCart(product, quantity)}
-          class="bg-light mt-6 flex w-full items-center justify-center p-4 text-sm uppercase tracking-wide text-black opacity-90 hover:opacity-100"
-        >
-          <span>Add To Cart</span>
-          {#if cartLoading}
-            <div class="lds-ring ml-4">
-              <div />
-              <div />
-              <div />
-              <div />
-            </div>
-          {/if}
-        </button>
-        {#if product.metadata}
-          {#each Object.entries(product.metadata) as metadata}
-            <DescriptionToggle
-              title={metadata[0].charAt(0).toUpperCase() + metadata[0].slice(1)}
-              description={metadata[1]}
-            />
           {/each}
-        {/if}
+          <p class="text-sm">{product.description}</p>
+          <div class="mt-8 flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="mr-1">
+                <Icons type="star" />
+              </div>
+              <div class="mr-1">
+                <Icons type="star" />
+              </div>
+              <div class="mr-1">
+                <Icons type="star" />
+              </div>
+              <div class="mr-1">
+                <Icons type="star" />
+              </div>
+              <div class="mr-1 opacity-50">
+                <Icons type="star" />
+              </div>
+            </div>
+            <div class="text-sm opacity-50">36 Reviews **make this work</div>
+          </div>
+          <input
+            value={quantity}
+            class="input input-primary mt-4"
+            type="number"
+            on:change={(e) => (quantity = e.target.value)}
+          />
+          <button
+            on:click={() => addToCart(product, quantity)}
+            class="bg-light mt-6 flex w-full items-center justify-center p-4 text-sm uppercase tracking-wide text-black opacity-90 hover:opacity-100"
+          >
+            <span>Add To Cart</span>
+            {#if cartLoading}
+              <div class="lds-ring ml-4">
+                <div />
+                <div />
+                <div />
+                <div />
+              </div>
+            {/if}
+          </button>
+          {#if product.metadata}
+            {#each Object.entries(product.metadata) as metadata}
+              <DescriptionToggle
+                title={metadata[0].charAt(0).toUpperCase() + metadata[0].slice(1)}
+                description={metadata[1]}
+              />
+            {/each}
+          {/if}
+        </div>
       </div>
     </div>
     <div class="px-4 py-8">
