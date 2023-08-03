@@ -2,7 +2,7 @@
   import '../app.css';
   import Header from '$components/Header.svelte';
   import Footer from '$components/Footer.svelte';
-  import { lineItems } from '$lib/store';
+  import { lineItems, origCartStr } from '$lib/store';
   import { onMount } from 'svelte';
 
   export let data;
@@ -39,6 +39,9 @@
       let localLineItems = JSON.parse(localStorage.getItem('lineitems'));
       if (localLineItems) {
         lineItems.set(localLineItems);
+        console.log("local lineitems found lineitems set!", $lineItems);
+      } else {
+        console.log("no local lineitems");
       }
     }
 

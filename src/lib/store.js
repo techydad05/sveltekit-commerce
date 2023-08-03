@@ -53,13 +53,11 @@ export const updateLineItem = async (line_id, quantity) => {
   })
 }
 
-export const addLineItemToCart = async (cartID, variant_id) => {
-  console.log("cartId:", cartID)
-  console.log("variantId:", variant_id)
-  const cart = await getMedusaCart(cartID);
-  console.log("cart in addLineItemToCart:", cart)
+export const addLineItemToCart = async (cartID, product) => {
+  console.log("cartID:", cartID);
+  console.log("product:", product);
   // const { cart } = await client.carts.lineItems.create(cartId, {
-  //   variant_id: variant_id,
+  //   variant_id,
   //   quantity: 1,
   // })
   // console.log("Item added", cart);
@@ -78,13 +76,13 @@ export const getMedusaCart = async (cartId) => {
 
   if (!cartId) {
     return await client.carts.create({ region_id: regionID }).then((res) => {
-      console.log("no cart in local.. creating cart:", res.cart);
+      // console.log("no cart in local.. creating cart:", res.cart);
       cartStore.set(res.cart)
       return res;
     })
   } else {
     return await client.carts.retrieve(cartId).then((res) => {
-      console.log("cart found in local:", res.cart);
+      // console.log("cart found in local:", res.cart);
       cartStore.set(res.cart)
       return res;
     })

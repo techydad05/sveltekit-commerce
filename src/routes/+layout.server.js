@@ -8,6 +8,6 @@ export async function load() {
             collections: res.collections
         }
     } else {
-        throw error("No Page Data ...")
+        throw error(res.status)
     }
 }

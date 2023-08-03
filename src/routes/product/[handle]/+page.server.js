@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { getProductByHandle, getProductsByTag, getCart, cartId } from '$lib/store';
+import { getProductByHandle, getProductsByTag } from '$lib/store';
 
 export async function load({ params }) {
   const resOne = await getProductByHandle(params.handle);

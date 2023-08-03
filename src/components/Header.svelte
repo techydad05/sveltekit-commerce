@@ -8,7 +8,6 @@
   import { updateLineItem, lineItems, origCartStr } from '$lib/store';
   import { browser } from '$app/environment';
 
-
   function clickOutside(element, callbackFunction) {
     function onClick(event) {
       if (!element.contains(event.target)) {
@@ -49,13 +48,20 @@
   });
   $: currentRoute = $page.url.pathname;
 
-  $: cartTotal = $lineItems.reduce((accumulator, item) => {
-    return accumulator + item.subtotal * item.quantity;
-  }, 0);
+  let cartTotal = 0;
+  $: {
+    if ($lineItems.length > 0) {
+      cartTotal = $lineItems.reduce((accumulator, item) => {
+        return '$' + ((accumulator + item.subtotal * item.quantity) / 100).toFixed(2);
+      }, 0);
+    } else {
+      cartTotal = '';
+    }
+  }
 
   // let origCartStr = '';
   if (browser) {
-        origCartStr.set(localStorage.getItem('lineitems'));
+    origCartStr.set(localStorage.getItem('lineitems'));
   }
 
   let theme_array = [
@@ -119,31 +125,32 @@
         });
       }
     }
-    JSON.stringify($lineItems) !== $origCartStr ? updating = true : updating = false;
+    JSON.stringify($lineItems) !== $origCartStr ? (updating = true) : (updating = false);
   }
-  
+
   const updateLineItems = () => {
     localStorage.setItem('lineitems', JSON.stringify($lineItems));
     origCartStr.set(JSON.stringify($lineItems));
     // updating = false;
     console.log('Cart updated!');
   };
-  
+
   const handleClick = () => {
     showMenu = !showMenu;
     dumpCart = false;
   };
 </script>
 
-<div
-  on:dblclick={() => (showThemeChange = !showThemeChange)}
-  class="navbar bg-neutral text-neutral-content fixed z-[99] h-[88px] justify-between"
->
+<div class="navbar bg-neutral text-neutral-content fixed z-[99] h-[88px] justify-between">
+  <div
+    on:dblclick={() => (showThemeChange = !showThemeChange)}
+    class="absolute top-0 left-0 h-4 w-4"
+  />
   <div class="h-full max-w-[200px]">
     <a href="/" class="logo btn btn-ghost h-full text-xl normal-case">
       <img src="/svelte_logo.png" alt="" class="h-[inherit]" />
     </a>
-    <div class:hidden={showThemeChange} class="dropdown absolute">
+    <div class:hidden={!showThemeChange} class="dropdown absolute">
       <select
         data-choose-theme
         class="select select-bordered text-primary w-full"
@@ -180,75 +187,84 @@
           class="menu menu-normal bg-base-100 rounded-box visible absolute top-[90%] right-[.4%] z-50 mt-3 block h-[calc(100vh-94px)] w-[300px] overflow-hidden overflow-y-auto p-4 opacity-100 shadow-lg"
         >
           <li><SearchBar /></li>
-          <div class="relative">
-            {#if JSON.stringify($lineItems) !== $origCartStr}
-              <div on:click={() => updateLineItems()} class="btn btn-sm btn-warning absolute left-0 top-4 w-1/2">
-                Update
-              </div>
-            {/if}
-            <div
-              class:rideCart={showMenu}
-              on:click={() => (dumpCart = !dumpCart)}
-              class="btn btn-link"
-            >
-              <div class:rotate={dumpCart} class:unrotate={!dumpCart}>
-                <Icons type="shopping-cart" />
+          {#if $lineItems.length > 0}
+            <div class="relative">
+              {#if JSON.stringify($lineItems) !== $origCartStr}
+                <div
+                  on:click={() => updateLineItems()}
+                  class="btn btn-sm btn-warning absolute left-0 top-4 w-1/2"
+                >
+                  Update
+                </div>
+              {/if}
+              <div
+                class:rideCart={showMenu}
+                on:click={() => (dumpCart = !dumpCart)}
+                class="btn btn-link"
+              >
+                <div class:rotate={dumpCart} class:unrotate={!dumpCart}>
+                  <Icons type="shopping-cart" />
+                </div>
               </div>
             </div>
-          </div>
-          <div class:open={dumpCart} class="cartdiv h-0 overflow-hidden overflow-y-scroll">
-            <div class="btn btn-primary btn-success w-full my-4"><a href="/checkout" class="no-underline">Checkout</a></div>
-            <h2 class="text-center text-xl">
-              Cart Subtotal: ${(cartTotal / 100).toFixed(2)}
-            </h2>
-            {#each $lineItems as item, i}
-              <div
-                class="grid-rows-[2, minmax(auto, 1fr)] relative mb-1 grid border-2 border-white p-1"
-              >
-                <div class="grid grid-cols-2">
-                  <div><img class="h-[100px]" src={item.thumbnail} alt="" /></div>
-                  <div class="relative">
-                    <div class="btn btn-sm btn-warning absolute right-0 top-0 rounded-none">X</div>
-                    <div class="absolute bottom-0">
-                      <p>Price: ${(item.subtotal / 100).toFixed(2)}</p>
-                      <p>Subtotal: ${((item.subtotal * item.quantity) / 100).toFixed(2)}</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-1 h-12">
-                  <div class="grid w-full grid-cols-2">
-                    <div class="flex h-12 items-center justify-center bg-gray-200">
-                      <h1 class="text-primary w-[80%] overflow-hidden text-ellipsis">
-                        {item.title}
-                      </h1>
-                    </div>
-                    <div class="grid grid-cols-3 gap-1">
-                      <div
-                        on:click={() => updateCartQuantities('dec', i)}
-                        class:btn-disabled={item.quantity === 0}
-                        class="btn btn-secondary rounded-none"
-                      >
-                        -
-                      </div>
-                      <input
-                        type="text"
-                        value={item.quantity}
-                        on:change={(e) => updateCartQuantities('input', i, e.target.value)}
-                        class="text-center"
-                      />
-                      <!-- WORK ON ADDING AN INVENTORY LIMIT FOR INCREMENTING ITEM QUANTITY -->
-                      <div
-                        on:click={() => updateCartQuantities('inc', i)}
-                        class="btn btn-secondary rounded-none"
-                      >
-                        +
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div class:open={dumpCart} class="cartdiv h-0 overflow-hidden overflow-y-scroll">
+              <div class="btn btn-primary btn-success my-4 w-full">
+                <a href="/checkout" class="no-underline">Checkout</a>
               </div>
-            {/each}
-          </div>
+              <h2 class="text-center text-xl">
+                Cart Subtotal: {cartTotal}
+              </h2>
+              {#each $lineItems as item, i}
+                <div
+                  class="grid-rows-[2, minmax(auto, 1fr)] relative mb-1 grid border-2 border-white p-1"
+                >
+                  <div class="grid grid-cols-2">
+                    <div><img class="h-[100px]" src={item.thumbnail} alt="" /></div>
+                    <div class="relative">
+                      <div class="btn btn-sm btn-warning absolute right-0 top-0 rounded-none">
+                        X
+                      </div>
+                      <div class="absolute bottom-0">
+                        <p>Price: ${(item.subtotal / 100).toFixed(2)}</p>
+                        <p>Subtotal: ${((item.subtotal * item.quantity) / 100).toFixed(2)}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-1 h-12">
+                    <div class="grid w-full grid-cols-2">
+                      <div class="flex h-12 items-center justify-center bg-gray-200">
+                        <h1 class="text-primary w-[80%] overflow-hidden text-ellipsis">
+                          {item.title}
+                        </h1>
+                      </div>
+                      <div class="grid grid-cols-3 gap-1">
+                        <div
+                          on:click={() => updateCartQuantities('dec', i)}
+                          class:btn-disabled={item.quantity === 0}
+                          class="btn btn-secondary rounded-none"
+                        >
+                          -
+                        </div>
+                        <input
+                          type="text"
+                          value={item.quantity}
+                          on:change={(e) => updateCartQuantities('input', i, e.target.value)}
+                          class="text-center"
+                        />
+                        <!-- WORK ON ADDING AN INVENTORY LIMIT FOR INCREMENTING ITEM QUANTITY -->
+                        <div
+                          on:click={() => updateCartQuantities('inc', i)}
+                          class="btn btn-secondary rounded-none"
+                        >
+                          +
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
           <li>
             <a
               data-sveltekit-prefetch
