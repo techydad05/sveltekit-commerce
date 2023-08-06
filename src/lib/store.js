@@ -56,12 +56,17 @@ export const updateLineItem = async (line_id, quantity) => {
 export const addLineItemToCart = async (cartID, product) => {
   console.log("cartID:", cartID);
   console.log("product:", product);
-  const { cart } = await client.carts.lineItems.create(cartID, {
-    variant_id: product,
-    quantity: 1,
-  })
-  console.log("Item added", cart);
-  cartStore.set(cart)
+  client.carts.retrieve(cartID)
+    .then(({ cart }) => {
+      console.log(cart.id);
+    });
+
+  // const { cart } = await client.carts.lineItems.create(cartID, {
+  //   variant_id: product,
+  //   quantity: 1,
+  // })
+  // console.log("Item added", cart);
+  // cartStore.set(cart)
   // if (cart.payment_session === undefined) {
   //   initSetPaymentSession(cart.id);
   // }
