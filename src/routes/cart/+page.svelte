@@ -2,7 +2,6 @@
   import { /** cart **/ lineItems } from '$lib/store';
 
   export let data;
-  export let ssr = false;
 
   const { medusa, usRegionId } = data;
 
