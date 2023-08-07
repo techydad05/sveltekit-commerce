@@ -7,13 +7,13 @@ export async function load() {
 
     let usRegionId = "";
 
-    let regions = await medusa.regions.list();
-    regions.regions.forEach((ele) => {
-        ele.countries.forEach((val) => {
-            if (val.iso_2 == "us") {
-                usRegionId = ele.id;
-            }
-        });
-    });
-    return { usRegionId: usRegionId, medusa: medusa };
+    // let regions = await medusa.regions.list();
+    // regions.regions.forEach((ele) => {
+    //     ele.countries.forEach((val) => {
+    //         if (val.iso_2 == "us") {
+    //             usRegionId = ele.id;
+    //         }
+    //     });
+    // });
+    return { medusa: medusa };
 }
