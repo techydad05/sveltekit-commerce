@@ -1,5 +1,6 @@
+import { createCart, addToCart, updateCart } from '../../utils/shopify.js';
 // import { createCart, addToCart, updateCart } from '../../utils/shopify.js';
-// import { error } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
 // export async function POST() {
 //   await createCart();

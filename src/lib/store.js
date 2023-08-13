@@ -54,22 +54,15 @@ export const updateLineItem = async (line_id, quantity) => {
 }
 
 export const addLineItemToCart = async (cartID, product) => {
-  console.log("cartID:", cartID);
-  console.log("product:", product);
-  client.carts.retrieve(cartID)
-    .then(({ cart }) => {
-      console.log(cart.id);
-    });
-
-  // const { cart } = await client.carts.lineItems.create(cartID, {
-  //   variant_id: product,
-  //   quantity: 1,
-  // })
-  // console.log("Item added", cart);
-  // cartStore.set(cart)
-  // if (cart.payment_session === undefined) {
-  //   initSetPaymentSession(cart.id);
-  // }
+  const { cart } = await client.carts.lineItems.create(cartID, {
+    variant_id: product,
+    quantity: 1,
+  })
+  console.log("Item added", cart);
+  cartStore.set(cart)
+  if (cart.payment_session === undefined) {
+    initSetPaymentSession(cart.id);
+  }
   // FIND NOTIFICATION LIB OR MAKE ONE TO USE IN THESE AREAS OR SOMEWHERE ELSE...
   // toast.push(`<span class="text-4xl">😎</span> <h1 class="text-lg">Item Added!</h1>`)
 }
@@ -77,21 +70,21 @@ export const addLineItemToCart = async (cartID, product) => {
 export const getMedusaCart = async (cartId) => {
   console.log("getting cart function");
   // searching for NA region id to create cart with will change later
-  let regionID = "reg_01H413JZSAFX46MF4J2BQEHDE3";
+  let regionID = "";
 
-  if (!cartId) {
-    return await client.carts.create({ region_id: regionID }).then((res) => {
-      // console.log("no cart in local.. creating cart:", res.cart);
-      cartStore.set(res.cart)
-      return res;
-    })
-  } else {
-    return await client.carts.retrieve(cartId).then((res) => {
-      // console.log("cart found in local:", res.cart);
-      cartStore.set(res.cart)
-      return res;
-    })
-  }
+  // if (!cartId) {
+  //   return await client.carts.create({ region_id: regionID }).then((res) => {
+  //     // console.log("no cart in local.. creating cart:", res.cart);
+  //     cartStore.set(res.cart)
+  //     return res;
+  //   })
+  // } else {
+  //   return await client.carts.retrieve(cartId).then((res) => {
+  //     // console.log("cart found in local:", res.cart);
+  //     cartStore.set(res.cart)
+  //     return res;
+  //   })
+  // }
 
 
 
@@ -103,29 +96,29 @@ export const getMedusaCart = async (cartId) => {
 
 
   // const cartId = localStorage.getItem("cart_id");
-  // await client.regions.list().then((res) => {
-  //   res.regions.forEach(region => {
-  //     region.name === "NA" ? regionID = region.id : null; 
-  //   });
-  // });
-  // if (regionID) {
-  //   if (cartId) {
-  //     return client.carts.retrieve(cartId).then((res) => {
-  //       console.log("cart found in local.");
-  //       cartStore.set(res.cart)
-  //       return res.cart;
-  //     });
+  await client.regions.list().then((res) => {
+    res.regions.forEach(region => {
+      region.name === "NA" ? regionID = region.id : null; 
+    });
+  });
+  if (regionID) {
+    if (cartId) {
+      return client.carts.retrieve(cartId).then((res) => {
+        console.log("cart found in local.");
+        cartStore.set(res.cart)
+        return res.cart;
+      });
 
-  //   } else {
-  //     return client.carts.create({region_id: regionID}).then((res) => {
-  //       console.log("no cart in local.. creating cart.");
-  //       cartStore.set(res.cart)
-  //       return res.cart
-  //     })
-  //   }
-  // } else {
-  //   console.log("must have NA region set in medusa admin or change code");
-  // }
+    } else {
+      return client.carts.create({region_id: regionID}).then((res) => {
+        console.log("no cart in local.. creating cart.");
+        cartStore.set(res.cart)
+        return res.cart
+      })
+    }
+  } else {
+    console.log("must have NA region set in medusa admin or change code");
+  }
 }
 
 export const getCollections = async () => {
